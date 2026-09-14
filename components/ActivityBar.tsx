@@ -114,7 +114,7 @@ export default function ActivityBar({
       <IconBtn title="Search" active={activePanel === "search" && !sidebarHidden} onClick={panelBtn("search")}>
         <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M20 20l-4.8-4.8" /></svg>
       </IconBtn>
-      <IconBtn title="Source Control" active={activePanel === "git" && !sidebarHidden} onClick={panelBtn("git")} badge="2">
+      <IconBtn title="Source Control" active={activePanel === "git" && !sidebarHidden} onClick={panelBtn("git")}>
         <svg viewBox="0 0 24 24"><circle cx="6" cy="5" r="2" /><circle cx="6" cy="19" r="2" /><circle cx="18" cy="7" r="2" /><path d="M6 7v10" /><path d="M6 12c0-3 3-3 6-3h4" /></svg>
       </IconBtn>
       <IconBtn title="Run and Debug" onClick={() => showToast("Run & Debug isn't wired up in this preview")}>

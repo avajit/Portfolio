@@ -18,6 +18,7 @@ export default function Titlebar({
   onToggleTerminal,
   onOpenCmdk,
   onZoom,
+  onDino,
 }: {
   isCompactMenu: boolean;
   onToggleSidebar: () => void;
@@ -26,6 +27,7 @@ export default function Titlebar({
   onToggleTerminal: () => void;
   onOpenCmdk: () => void;
   onZoom: (dir: 1 | -1 | 0) => void;
+  onDino: () => void;
 }) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const { showToast } = useToast();
@@ -37,30 +39,61 @@ export default function Titlebar({
     return () => document.removeEventListener("click", close);
   }, [openMenu]);
 
+  // ── Actions ──────────────────────────────────────────────
+  const handleResume = () => {
+    showToast("Downloading resume...");
+    const link = document.createElement("a");
+    link.href = "/Avajit_Kumar_Kewrat_Resume.pdf";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.click();
+  };
+
+  const handleEmail = () => {
+    window.location.href = "mailto:avajitkumar@example.com"; // User can update this
+  };
+
+  const handleGithub = () => {
+    window.open("https://github.com/accelix-ai", "_blank");
+  };
+
+  const handleCopyUrl = () => {
+    navigator.clipboard.writeText(window.location.href);
+    showToast("Portfolio URL copied to clipboard!");
+  };
+
+  const handleSelectAll = () => {
+    const range = document.createRange();
+    range.selectNode(document.body);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  };
+
+  const handleFakeDebug = () => {
+    onToggleTerminal();
+    setTimeout(() => {
+      showToast("Running diagnostics in terminal...");
+      // A more complex implementation could push real lines to the terminal
+    }, 500);
+  };
+
   const menus: Record<string, MenuItem[]> = {
     File: [
-      { label: "New File", shortcut: "Ctrl+N" },
-      { label: "Open Folder..." },
-      { label: "Save", shortcut: "Ctrl+S" },
-      { label: "Close Editor", shortcut: "Ctrl+W", action: onCloseActiveTab },
+      { label: "New Email", shortcut: "Ctrl+N", action: handleEmail },
+      { label: "Open GitHub Profile...", action: handleGithub },
+      { label: "Download Resume", shortcut: "Ctrl+S", action: handleResume },
       { label: "", divider: true },
-      { label: "Exit" },
+      { label: "Close Tab", shortcut: "Ctrl+W", action: onCloseActiveTab },
     ],
     Edit: [
-      { label: "Undo", shortcut: "Ctrl+Z" },
-      { label: "Redo", shortcut: "Ctrl+Y" },
+      { label: "Copy URL", action: handleCopyUrl },
       { label: "", divider: true },
-      { label: "Cut" },
-      { label: "Copy" },
-      { label: "Paste" },
-      { label: "", divider: true },
-      { label: "Find", shortcut: "Ctrl+F", action: onOpenCmdk },
+      { label: "Find (Command Palette)", shortcut: "Ctrl+F", action: onOpenCmdk },
     ],
     Selection: [
-      { label: "Select All", shortcut: "Ctrl+A" },
-      { label: "Expand Selection" },
-      { label: "Copy Line Up" },
-      { label: "Copy Line Down" },
+      { label: "Select All", shortcut: "Ctrl+A", action: handleSelectAll },
+      { label: "Expand Selection", action: () => showToast("Selection features are for text editing only!") },
     ],
     View: [
       { label: "Command Palette", shortcut: "Ctrl+P", action: onOpenCmdk },
@@ -72,14 +105,11 @@ export default function Titlebar({
       { label: "Reset Zoom", action: () => onZoom(0) },
     ],
     Go: [
-      { label: "Go to File...", shortcut: "Ctrl+P", action: onOpenCmdk },
-      { label: "Go Back" },
-      { label: "Go Forward" },
+      { label: "Go to Section...", shortcut: "Ctrl+P", action: onOpenCmdk },
     ],
     Run: [
-      { label: "Run Without Debugging", shortcut: "Ctrl+F5" },
-      { label: "Start Debugging", shortcut: "F5" },
-      { label: "Open Configurations" },
+      { label: "Run Without Debugging", shortcut: "Ctrl+F5", action: onDino },
+      { label: "Start Debugging", shortcut: "F5", action: handleFakeDebug },
     ],
   };
 
@@ -150,13 +180,7 @@ export default function Titlebar({
 
       {!isCompactMenu && (
         <div className="flex flex-1 justify-center">
-          <input
-            type="text"
-            readOnly
-            value=""
-            placeholder="portfolio"
-            className="w-[260px] rounded border border-vsc-line bg-vsc-hover px-3 py-1 text-center text-xs text-vsc-text placeholder:text-vsc-muted"
-          />
+          {/* Search bar removed per user request */}
         </div>
       )}
       {isCompactMenu && <div className="flex-1" />}

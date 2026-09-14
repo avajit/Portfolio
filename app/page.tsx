@@ -195,6 +195,7 @@ function PortfolioApp() {
         onToggleTerminal={() => setTerminalOpen((p) => !p)}
         onOpenCmdk={() => setCmdkOpen(true)}
         onZoom={handleZoom}
+        onDino={() => setDinoOpen(true)}
       />
 
       <div

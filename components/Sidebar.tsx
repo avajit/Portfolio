@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { fileMeta, sectionOrder, type SectionId } from "@/lib/fileMeta";
 import { useToast } from "@/lib/ToastContext";
+import { FileIcon } from "./FileIcon";
 import type { PanelId } from "./ActivityBar";
 
 export default function Sidebar({
@@ -73,12 +74,7 @@ export default function Sidebar({
                           : "text-vsc-muted hover:bg-[#2a2d2e] hover:text-vsc-text"
                       }`}
                     >
-                      <span
-                        className="w-4 shrink-0 text-center text-[10px] font-bold"
-                        style={{ color: meta.iconColorVar }}
-                      >
-                        {meta.ext}
-                      </span>
+                      <FileIcon name={meta.name} className="w-[14px] h-[14px] shrink-0" />
                       <span className="min-w-0 flex-1 truncate">
                         {meta.name}
                       </span>
@@ -89,12 +85,10 @@ export default function Sidebar({
                   onClick={handleResume}
                   className="flex w-full items-center gap-2 overflow-hidden py-1.5 pl-6 pr-4 text-left text-[13px] text-vsc-muted hover:bg-[#2a2d2e] hover:text-vsc-text transition-colors"
                 >
-                  <span
-                    className="w-4 shrink-0 text-center text-[10px] font-bold"
-                    style={{ color: "var(--vsc-icon-pdf)" }}
-                  >
-                    ◆
-                  </span>
+                  <FileIcon
+                    name="Avajit_Kumar_Kewrat_Resume.pdf"
+                    className="w-[14px] h-[14px] shrink-0"
+                  />
                   <span className="min-w-0 flex-1 truncate">
                     Avajit_Kumar_Kewrat_Resume.pdf
                   </span>
@@ -154,11 +148,17 @@ export default function Sidebar({
               CHANGES (2)
             </div>
             <div className="flex items-center justify-between py-1.5 text-[12.5px] text-vsc-text">
-              <span>home.tsx</span>
+              <div className="flex items-center gap-2">
+                <FileIcon name="home.tsx" className="w-[14px] h-[14px] shrink-0" />
+                <span>home.tsx</span>
+              </div>
               <span className="text-[11px] font-bold" style={{ color: "#e2c08d" }}>M</span>
             </div>
             <div className="flex items-center justify-between py-1.5 text-[12.5px] text-vsc-text">
-              <span>skills.json</span>
+              <div className="flex items-center gap-2">
+                <FileIcon name="skills.json" className="w-[14px] h-[14px] shrink-0" />
+                <span>skills.json</span>
+              </div>
               <span className="text-[11px] font-bold" style={{ color: "#e2c08d" }}>M</span>
             </div>
           </div>
