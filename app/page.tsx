@@ -42,7 +42,7 @@ function PortfolioApp() {
   const sidebarHidden = sidebarOverride ?? viewport.isNarrow;
 
   // ── Tabs ─────────────────────────────────────────────────────────────────
-  const [openTabs, setOpenTabs] = useState<SectionId[]>(["home"]);
+  const [openTabs, setOpenTabs] = useState<SectionId[]>(sectionOrder);
   const [activeTab, setActiveTab] = useState<SectionId | null>("home");
 
   // ── Overlays & panels ────────────────────────────────────────────────────
@@ -252,13 +252,10 @@ function PortfolioApp() {
             isMobile={isMobile}
             onSelect={openAndScroll}
             onClose={closeTab}
+            onOpenCmdk={() => setCmdkOpen(true)}
+            onToggleCopilot={() => setCopilotOpen((p) => !p)}
+            onToggleTerminal={() => setTerminalOpen((p) => !p)}
           />
-          <div className="border-b border-vsc-line px-4 py-1.5 text-xs text-vsc-muted">
-            portfolio &gt; src &gt;{" "}
-            <span className="text-vsc-text font-medium">
-              {activeTab ? fileMeta[activeTab].name : ""}
-            </span>
-          </div>
 
           <div ref={contentRef} className="flex-1 overflow-y-auto scroll-smooth">
             {!isMobile ? (
