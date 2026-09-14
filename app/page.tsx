@@ -18,7 +18,7 @@ import Experience from "@/components/sections/Experience";
 import Projects from "@/components/sections/Projects";
 import Contact from "@/components/sections/Contact";
 import Connect from "@/components/sections/Connect";
-import { fileMeta, sectionOrder, type SectionId } from "@/lib/fileMeta";
+import { sectionOrder, type SectionId } from "@/lib/fileMeta";
 import { useViewport } from "@/lib/useViewport";
 import { NavigationProvider } from "@/lib/NavigationContext";
 import { ToastProvider } from "@/lib/ToastContext";
@@ -42,7 +42,7 @@ function PortfolioApp() {
   const sidebarHidden = sidebarOverride ?? viewport.isNarrow;
 
   // ── Tabs ─────────────────────────────────────────────────────────────────
-  const [openTabs, setOpenTabs] = useState<SectionId[]>(["home"]);
+  const [openTabs, setOpenTabs] = useState<SectionId[]>(sectionOrder);
   const [activeTab, setActiveTab] = useState<SectionId | null>("home");
 
   // ── Overlays & panels ────────────────────────────────────────────────────
@@ -84,75 +84,45 @@ function PortfolioApp() {
   };
 
   // ── Tab / navigation helpers ─────────────────────────────────────────────
-  const openAndScroll = useCallback(
-    (id: SectionId) => {
-      setOpenTabs((prev) => {
-        if (prev.includes(id)) return prev;
-        const insertAt = sectionOrder.indexOf(id);
-        const next = [...prev];
-        const idx = next.findIndex((t) => sectionOrder.indexOf(t) > insertAt);
-        if (idx === -1) next.push(id);
-        else next.splice(idx, 0, id);
-        return next;
-      });
-      setActiveTab(id);
-      if (viewport.isNarrow) {
-        sectionRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else {
-        contentRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    },
-    [viewport.isNarrow]
-  );
+  const openAndScroll = useCallback((id: SectionId) => {
+    setOpenTabs((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    setActiveTab(id);
+    const target = sectionRefs.current[id];
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
 
-  const closeTab = useCallback(
-    (id: SectionId) => {
-      setOpenTabs((prev) => {
-        const idx = prev.indexOf(id);
-        if (idx === -1) return prev;
-        const next = prev.filter((t) => t !== id);
-        if (next.length === 0) {
-          setActiveTab(null);
-        } else if (activeTab === id) {
-          const nextId = next[Math.min(idx, next.length - 1)];
-          setActiveTab(nextId);
-          if (viewport.isNarrow) {
-            sectionRefs.current[nextId]?.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          } else {
-            contentRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-          }
-        }
-        return next;
-      });
-    },
-    [activeTab, viewport.isNarrow]
-  );
+  const closeTab = useCallback((id: SectionId) => {
+    setOpenTabs((prev) => {
+      const next = prev.filter((t) => t !== id);
+      return next;
+    });
+  }, []);
 
-  const openTabsKey = openTabs.join(",");
+  // ── IntersectionObserver for scroll-sync ─────────────────────────────────
   useEffect(() => {
-    if (!viewport.isNarrow) return;
     const el = contentRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const id = entry.target.id as SectionId;
-          if (entry.isIntersecting && openTabs.includes(id)) {
+          if (entry.isIntersecting) {
+            const id = entry.target.id as SectionId;
             setActiveTab((prev) => (prev === id ? prev : id));
           }
         });
       },
-      { root: el, threshold: 0.55 }
+      { root: el, threshold: 0.3 }
     );
+
     sectionOrder.forEach((id) => {
       const target = sectionRefs.current[id];
       if (target) observer.observe(target);
     });
+
     return () => observer.disconnect();
-  }, [openTabsKey, viewport.isNarrow]);
+  }, []);
 
   // ── Global keyboard shortcuts ────────────────────────────────────────────
   useEffect(() => {
@@ -185,12 +155,10 @@ function PortfolioApp() {
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewport.isNarrow]);
+  }, [toggleSidebar, handleZoom]);
 
-  // ── Copilot & Mobile layout ───────────────────────────────────────────────
-  const isMobile = viewport.isNarrow;
-  const mainCols = isMobile
+  const isNarrow = viewport.isNarrow;
+  const mainCols = isNarrow
     ? "1fr"
     : `${viewport.activityBarWidth}px ${
         sidebarHidden ? 0 : viewport.sidebarWidth
@@ -198,10 +166,12 @@ function PortfolioApp() {
 
   return (
     <div
-      className="grid h-screen"
-      style={{ gridTemplateRows: isMobile ? "1fr" : "38px 1fr 22px" }}
+      className="grid h-screen select-none font-sans"
+      style={{
+        gridTemplateRows: isNarrow ? "1fr" : "38px 1fr 22px",
+      }}
     >
-      {!isMobile && (
+      {!isNarrow && (
         <Titlebar
           isCompactMenu={viewport.isCompactMenu}
           onToggleSidebar={toggleSidebar}
@@ -221,7 +191,7 @@ function PortfolioApp() {
           transition: "grid-template-columns 150ms ease",
         }}
       >
-        {!isMobile && (
+        {!isNarrow && (
           <ActivityBar
             width={viewport.activityBarWidth}
             activePanel={activePanel}
@@ -234,7 +204,7 @@ function PortfolioApp() {
           />
         )}
 
-        {!isMobile && (
+        {!isNarrow && (
           <Sidebar
             width={viewport.sidebarWidth}
             hidden={sidebarHidden}
@@ -246,11 +216,11 @@ function PortfolioApp() {
 
         {/* ── Main editor area ── */}
         <section className="flex flex-col flex-1 min-w-0 overflow-hidden">
-          {!isMobile && (
+          {!isNarrow && (
             <Tabs
               openTabs={openTabs}
               activeTab={activeTab}
-              isMobile={isMobile}
+              isMobile={isNarrow}
               onSelect={openAndScroll}
               onClose={closeTab}
               onOpenCmdk={() => setCmdkOpen(true)}
@@ -260,106 +230,66 @@ function PortfolioApp() {
           )}
 
           <div ref={contentRef} className="flex-1 overflow-y-auto scroll-smooth">
-            {!isMobile ? (
-              (() => {
-                const currentTab =
-                  activeTab && openTabs.includes(activeTab)
-                    ? activeTab
-                    : openTabs.length > 0
-                    ? openTabs[0]
-                    : null;
-
-                if (currentTab) {
-                  const Component = sectionComponents[currentTab];
-                  return (
-                    <section
-                      key={currentTab}
-                      id={currentTab}
-                      style={{ padding: viewport.sectionPadding }}
-                      className="min-h-[60vh]"
-                    >
-                      <NavigationProvider navigate={openAndScroll}>
-                        <Component />
-                      </NavigationProvider>
-                    </section>
-                  );
-                }
-
+            <NavigationProvider navigate={openAndScroll}>
+              {sectionOrder.map((id, i) => {
+                const Component = sectionComponents[id];
                 return (
-                  <div className="flex h-full min-h-[400px] flex-col items-center justify-center gap-2.5 text-vsc-muted select-none">
-                    <div className="text-4xl opacity-50">◆</div>
-                    <div className="font-medium text-vsc-text">No editor open</div>
-                    <div className="text-xs text-vsc-muted">
-                      Select a file from the sidebar or click below
-                    </div>
-                    <button
-                      onClick={() => openAndScroll("home")}
-                      className="mt-2 rounded border border-vsc-line bg-vsc-panel px-3 py-1.5 text-xs text-vsc-text hover:border-vsc-blue hover:bg-vsc-hover transition-colors"
-                    >
-                      Open home.tsx
-                    </button>
-                  </div>
+                  <section
+                    key={id}
+                    id={id}
+                    ref={(el) => { sectionRefs.current[id] = el; }}
+                    style={{ padding: viewport.sectionPadding }}
+                    className={`min-h-[60vh] ${
+                      i !== sectionOrder.length - 1
+                        ? "border-b border-dashed border-vsc-line"
+                        : ""
+                    }`}
+                  >
+                    <Component />
+                  </section>
                 );
-              })()
-            ) : (
-              <NavigationProvider navigate={openAndScroll}>
-                {sectionOrder.map((id, i) => {
-                  const Component = sectionComponents[id];
-                  return (
-                    <section
-                      key={id}
-                      id={id}
-                      ref={(el) => { sectionRefs.current[id] = el; }}
-                      style={{ padding: viewport.sectionPadding }}
-                      className={`min-h-[60vh] ${
-                        i !== sectionOrder.length - 1
-                          ? "border-b border-dashed border-vsc-line"
-                          : ""
-                      }`}
-                    >
-                      <Component />
-                    </section>
-                  );
-                })}
-              </NavigationProvider>
-            )}
+              })}
+            </NavigationProvider>
           </div>
-
-          {/* Terminal panel — sits inside editor column above statusbar */}
-          <Terminal
-            open={terminalOpen}
-            onClose={() => setTerminalOpen(false)}
-          />
         </section>
 
-        {/* Copilot panel — column on desktop, fixed drawer on mobile */}
-        {copilotOpen && (
-          isMobile ? (
-            <div className="fixed inset-y-0 right-0 z-50 shadow-2xl">
-              <CopilotPanel onClose={() => setCopilotOpen(false)} />
-            </div>
-          ) : (
+        {/* Copilot panel */}
+        {!isNarrow && copilotOpen && (
+          <div className="border-l border-vsc-line bg-vsc-sidebar">
             <CopilotPanel onClose={() => setCopilotOpen(false)} />
-          )
+          </div>
         )}
       </div>
 
-      {!isMobile && <StatusBar activeTab={activeTab} />}
+      {!isNarrow && (
+        <StatusBar activeTab={activeTab} />
+      )}
 
-      {/* ── Overlays (fixed) ── */}
+      <Terminal
+        open={terminalOpen}
+        onClose={() => setTerminalOpen(false)}
+      />
+
+      {isNarrow && copilotOpen && (
+        <div className="fixed inset-y-0 right-0 z-50 w-full max-w-[320px] border-l border-vsc-line bg-vsc-sidebar shadow-2xl">
+          <CopilotPanel onClose={() => setCopilotOpen(false)} />
+        </div>
+      )}
+
       <CommandPalette
         open={cmdkOpen}
         onClose={() => setCmdkOpen(false)}
         onNavigate={openAndScroll}
         onDino={() => setDinoOpen(true)}
       />
+
       <DinoGame open={dinoOpen} onClose={() => setDinoOpen(false)} />
       <ToastStack />
     </div>
   );
 }
 
-export default function Page() {
+export default function HomeApp() {
   return (
     <ToastProvider>
       <PortfolioApp />
