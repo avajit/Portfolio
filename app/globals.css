@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+:root {
+  --vsc-bg: #1e1e1e;
+  --vsc-sidebar: #181818;
+  --vsc-titlebar: #181818;
+  --vsc-tab-active: #1e1e1e;
+  --vsc-tab-inactive: #181818;
+  --vsc-line: #2d2d2d;
+  --vsc-text: #d4d4d4;
+  --vsc-muted: #7a7a7a;
+  --vsc-comment: #6a9955;
+  --vsc-white: #ffffff;
+  --vsc-pink: #e93cac;
+  --vsc-blue: #3b8eea;
+  --vsc-panel: #232323;
+  --vsc-elevated: #252526;
+  --vsc-hover: #2a2a2a;
+  --vsc-selected: #37373d;
+
+  --vsc-icon-html: #e34c26;
+  --vsc-icon-js: #f0db4f;
+  --vsc-icon-json: #cbcb41;
+  --vsc-icon-ts: #3178c6;
+  --vsc-icon-css: #2965f1;
+  --vsc-icon-md: #6a9955;
+  --vsc-icon-pdf: #e94141;
+}
+
+@theme inline {
+  --color-vsc-bg: var(--vsc-bg);
+  --color-vsc-sidebar: var(--vsc-sidebar);
+  --color-vsc-titlebar: var(--vsc-titlebar);
+  --color-vsc-tab-active: var(--vsc-tab-active);
+  --color-vsc-tab-inactive: var(--vsc-tab-inactive);
+  --color-vsc-line: var(--vsc-line);
+  --color-vsc-text: var(--vsc-text);
+  --color-vsc-muted: var(--vsc-muted);
+  --color-vsc-comment: var(--vsc-comment);
+  --color-vsc-white: var(--vsc-white);
+  --color-vsc-pink: var(--vsc-pink);
+  --color-vsc-blue: var(--vsc-blue);
+  --color-vsc-panel: var(--vsc-panel);
+  --color-vsc-elevated: var(--vsc-elevated);
+  --color-vsc-hover: var(--vsc-hover);
+  --color-vsc-selected: var(--vsc-selected);
+
+  --color-vsc-icon-html: var(--vsc-icon-html);
+  --color-vsc-icon-js: var(--vsc-icon-js);
+  --color-vsc-icon-json: var(--vsc-icon-json);
+  --color-vsc-icon-ts: var(--vsc-icon-ts);
+  --color-vsc-icon-css: var(--vsc-icon-css);
+  --color-vsc-icon-md: var(--vsc-icon-md);
+  --color-vsc-icon-pdf: var(--vsc-icon-pdf);
+
+  --font-mono: var(--font-jetbrains-mono), monospace;
+
+  --breakpoint-tablet: 1024px;
+  --breakpoint-sm-tablet: 900px;
+  --breakpoint-phone: 600px;
+  --breakpoint-xs: 380px;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--vsc-bg);
+  color: var(--vsc-text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  cursor:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect x="1" y="1" width="14" height="14" fill="none" stroke="%233b8eea" stroke-width="2"/></svg>')
+      8 8,
+    auto;
+}
+
+a,
+button,
+[data-clickable] {
+  cursor:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect x="1" y="1" width="14" height="14" fill="%233b8eea" stroke="%233b8eea" stroke-width="2" fill-opacity="0.3"/></svg>')
+      8 8,
+    pointer;
+}
+
+:focus-visible {
+  outline: 1px solid var(--vsc-blue);
+  outline-offset: 2px;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+.blink-cursor {
+  animation: blink 1s step-start infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .blink-cursor {
+    animation: none;
+  }
+}
+
+/* ── Toast slide-in ──────────────────────────────────────────────────────── */
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.toast-item {
+  animation: toastIn 0.25s ease forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast-item {
+    animation: none;
+  }
+}

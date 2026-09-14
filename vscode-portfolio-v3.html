@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avajit Kumar Kewrat — portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1e1e1e;
+    --sidebar: #181818;
+    --titlebar: #181818;
+    --tab-active: #1e1e1e;
+    --tab-inactive: #181818;
+    --line: #2d2d2d;
+    --text: #d4d4d4;
+    --muted: #7a7a7a;
+    --comment: #6a9955;
+    --white: #ffffff;
+    --pink: #e93cac;
+    --blue: #3b8eea;
+    --icon-html: #e34c26;
+    --icon-js: #f0db4f;
+    --icon-json: #cbcb41;
+    --icon-ts: #3178c6;
+    --icon-css: #2965f1;
+    --icon-md: #6a9955;
+    --icon-pdf: #e94141;
+  }
+  *{ box-sizing: border-box; }
+  html, body{ height:100%; margin:0; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect x="1" y="1" width="14" height="14" fill="none" stroke="%233b8eea" stroke-width="2"/></svg>') 8 8, auto;
+  }
+  a, button, .file, .tab, [data-action], [data-target], .theme-item, .action-item{
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect x="1" y="1" width="14" height="14" fill="%233b8eea" stroke="%233b8eea" stroke-width="2" fill-opacity="0.3"/></svg>') 8 8, pointer;
+  }
+  :focus-visible{ outline: 1px solid var(--blue); outline-offset:2px; }
+  button{ font-family:inherit; }
+
+  .app{
+    display: grid;
+    grid-template-rows: 38px 1fr 22px;
+    height: 100vh;
+    position:relative;
+  }
+
+  /* ---------- TITLEBAR ---------- */
+  .titlebar{
+    background: var(--titlebar);
+    display:flex;
+    align-items:center;
+    padding: 0 10px;
+    gap: 4px;
+    border-bottom: 1px solid var(--line);
+    position:relative;
+    z-index: 30;
+  }
+  .vs-icon{ width:22px; height:22px; color: var(--blue); display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .menu{ display:flex; gap: 2px; color: var(--muted); font-size: 13px; position:relative; }
+  .menu-item{ position:relative; }
+  .menu-item > button{
+    background:none; border:none; color:var(--muted); font-family:inherit; font-size:13px;
+    padding: 6px 9px; cursor:pointer; border-radius:3px;
+  }
+  .menu-item > button:hover, .menu-item.open > button{ background:#2a2a2a; color:var(--text); }
+  .dropdown{
+    display:none;
+    position:absolute; top: 30px; left:0;
+    background:#252526; border:1px solid var(--line); border-radius:5px;
+    min-width: 220px; padding: 6px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 50;
+  }
+  .menu-item.open .dropdown{ display:block; }
+  .dropdown button{
+    display:flex; justify-content:space-between; align-items:center; width:100%;
+    background:none; border:none; color:var(--text); font-family:inherit; font-size:12.5px;
+    padding: 7px 16px; cursor:pointer; text-align:left;
+  }
+  .dropdown button:hover{ background: var(--blue); color:#fff; }
+  .dropdown button:hover .shortcut{ color:#fff; }
+  .dropdown .shortcut{ color:var(--muted); font-size:11px; }
+  .dropdown hr{ border:none; border-top:1px solid var(--line); margin:6px 0; }
+
+  .mobile-menu{ display:none; }
+  .titlebar-search{ flex:1; display:flex; justify-content:center; }
+  .titlebar-search input{
+    background: #2a2a2a; border: 1px solid var(--line); color: var(--text);
+    font-family:inherit; font-size: 12px; padding: 4px 12px; border-radius: 5px;
+    width: 260px; text-align:center;
+  }
+  .titlebar-search input::placeholder{ color: var(--muted); }
+  .titlebar-right{ display:flex; align-items:center; gap: 12px; }
+  .update-btn{ background: var(--blue); color:#fff; border:none; font-size:12px; padding: 5px 12px; border-radius:4px; cursor:pointer; }
+  .win-controls{ display:flex; gap:0; margin-left:8px; }
+  .win-controls button{ background:none; border:none; color: var(--muted); width: 42px; height:38px; cursor:default; font-size:14px; }
+  .win-controls button:hover{ background:#2a2a2a; }
+  .win-controls .close:hover{ background:#e81123; color:#fff; }
+
+  /* ---------- MAIN LAYOUT ---------- */
+  .main{ display:grid; grid-template-columns: 48px 260px 1fr; overflow:hidden; transition: grid-template-columns .15s ease; }
+  .main.sidebar-hidden{ grid-template-columns: 48px 0px 1fr; }
+  .main.sidebar-hidden .sidebar{ overflow:hidden; padding:0; border-width:0; }
+
+  /* activity bar */
+  .activitybar{ background: var(--titlebar); border-right: 1px solid var(--line); display:flex; flex-direction:column; align-items:center; padding: 10px 0; gap: 14px; position:relative; }
+  .activitybar{ overflow-y:auto; overflow-x:hidden; scrollbar-width:none; }
+  .activitybar::-webkit-scrollbar{ display:none; }
+  .activitybar button.icon{ background:none; border:none; color: var(--muted); position:relative; cursor:pointer; padding:0; flex-shrink:0; display:flex; align-items:center; justify-content:center; width:26px; height:26px; }
+  .activitybar button.icon svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round; }
+  .activitybar button.icon:hover{ color: var(--text); }
+  .activitybar button.icon.active{ color: var(--white); }
+  .activitybar button.icon.active::before{ content:""; position:absolute; left:-12px; top:-4px; bottom:-4px; width:2px; background: var(--white); }
+  .activitybar .spacer{ flex:1; }
+  .badge{ position:absolute; top:-6px; right:-8px; background:var(--blue); color:#fff; font-size:9px; border-radius:8px; padding:1px 4px; }
+
+  /* popups from bottom activity icons */
+  .popup{
+    display:none; position:absolute; bottom: 10px; left: 44px;
+    background:#252526; border:1px solid var(--line); border-radius:6px;
+    z-index:60; box-shadow: 0 8px 24px rgba(0,0,0,0.45); font-size:12.5px;
+  }
+  .popup.open{ display:block; }
+  #popup-settings{ width: 250px; padding: 10px 0; }
+  .popup-label{ padding: 6px 14px; color:var(--muted); font-size:10.5px; letter-spacing:.08em; }
+  .theme-item, .action-item{
+    display:flex; align-items:center; gap:8px; width:100%; background:none; border:none;
+    color:var(--text); font-family:inherit; font-size:12.5px; padding:7px 14px; cursor:pointer; text-align:left;
+  }
+  .theme-item:hover, .action-item:hover{ background: var(--blue); color:#fff; }
+  .theme-dot{ width:10px; height:10px; border-radius:50%; }
+  .popup hr{ border:none; border-top:1px solid var(--line); margin:6px 0; }
+  #popup-account{ width:170px; padding:8px 0; }
+  #popup-more{ width:190px; padding:8px 0; }
+
+  /* sidebar */
+  .sidebar{ background: var(--sidebar); border-right: 1px solid var(--line); overflow-y:auto; overflow-x:hidden; position:relative; }
+  .panel{ display:none; padding: 14px 0; }
+  .panel.active{ display:block; }
+  .sidebar-label{ color: var(--muted); font-size: 11px; letter-spacing: 0.08em; padding: 0 16px 10px; }
+  .folder-name{ display:flex; align-items:center; gap:6px; padding: 4px 16px 10px; font-weight:700; font-size:13px; }
+  .file{ display:flex; align-items:center; gap:8px; padding: 5px 16px 5px 28px; font-size:13px; color: var(--text); cursor:pointer; border:none; background:none; width:100%; text-align:left; overflow:hidden; }
+  .file .name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; flex:1; }
+  .file:hover{ background: #2a2d2e; }
+  .file.selected{ background:#37373d; }
+  .file .ext{ width:16px; text-align:center; font-size:10px; font-weight:700; border-radius:3px; }
+  .file .icon-tsx, .file .icon-ts{ color: var(--icon-ts); }
+  .file .icon-html{ color: var(--icon-html); }
+  .file .icon-js{ color: var(--icon-js); }
+  .file .icon-json{ color: var(--icon-json); }
+  .file .icon-css{ color: var(--icon-css); }
+  .file .icon-md{ color: var(--icon-md); }
+  .file .icon-pdf{ color: var(--icon-pdf); }
+  .file .name{ color: var(--muted); }
+  .file.selected .name{ color: var(--white); }
+
+  /* search panel */
+  .search-box{ margin: 0 16px 14px; }
+  .search-box input{ width:100%; background:#2a2a2a; border:1px solid var(--line); color:var(--text); font-family:inherit; font-size:12.5px; padding:7px 10px; border-radius:4px; }
+  .search-result{ padding:6px 16px; font-size:12.5px; color:var(--muted); cursor:pointer; }
+  .search-result:hover{ background:#2a2d2e; color:var(--text); }
+  .search-result b{ color: var(--text); }
+  .no-results{ padding: 6px 16px; color:var(--muted); font-size:12px; font-style:italic; }
+
+  /* git panel */
+  .git-box{ padding: 0 16px; }
+  .git-msg{ width:100%; background:#2a2a2a; border:1px solid var(--line); color:var(--text); font-family:inherit; font-size:12px; padding:8px 10px; border-radius:4px; margin-bottom:10px; resize:none; }
+  .git-commit-btn{ width:100%; background:var(--blue); color:#fff; border:none; font-family:inherit; font-size:12.5px; padding:7px; border-radius:4px; cursor:pointer; margin-bottom:14px; }
+  .git-file{ display:flex; justify-content:space-between; align-items:center; padding:5px 0; font-size:12.5px; color:var(--text); }
+  .git-file .m{ color:#e2c08d; font-size:11px; font-weight:700; }
+
+  /* extensions panel */
+  .ext-item{ display:flex; gap:10px; padding:10px 16px; border-bottom:1px solid var(--line); }
+  .ext-icon{ width:28px; height:28px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+  .ext-name{ font-size:12.5px; color:var(--white); }
+  .ext-desc{ font-size:11px; color:var(--muted); margin-top:2px; }
+
+  /* editor */
+  .editor{ display:flex; flex-direction:column; overflow:hidden; }
+  .tabs{ display:flex; background: var(--tab-inactive); border-bottom: 1px solid var(--line); overflow-x:auto; }
+  .tab{ display:flex; align-items:center; gap:8px; padding: 8px 10px 8px 16px; font-size:13px; color: var(--muted); border-right: 1px solid var(--line); cursor:pointer; background:none; border-top:none; border-left:none; border-bottom:none; white-space:nowrap; }
+  .tab.active{ background: var(--tab-active); color: var(--text); }
+  .tab .ext{ font-size:10px; font-weight:700; }
+  .tab .tab-close{ background:none; border:none; color:var(--muted); font-size:13px; padding:2px 4px; border-radius:3px; cursor:pointer; line-height:1; }
+  .tab .tab-close:hover{ background:#4a4a4a; color:#fff; }
+  .breadcrumb{ padding: 6px 20px; font-size:12px; color: var(--muted); border-bottom: 1px solid var(--line); }
+  .breadcrumb span{ color: var(--text); }
+
+  .content{ flex:1; overflow-y:auto; scroll-behavior:smooth; }
+  .empty-state{ display:none; height:100%; align-items:center; justify-content:center; flex-direction:column; gap:10px; color:var(--muted); }
+  .empty-state.show{ display:flex; }
+  .empty-state .big{ font-size:40px; opacity:.5; }
+
+  section.page{ padding: 46px 60px 70px; border-bottom: 1px dashed var(--line); min-height: 60vh; }
+  section.page:last-child{ border-bottom:none; }
+
+  .ln{ color: var(--comment); font-size:14px; margin-bottom: 26px; }
+  .cursor{ display:inline-block; width:2px; height:16px; background: var(--white); margin-left:4px; animation: blink 1s step-start infinite; vertical-align:middle; }
+  @keyframes blink{ 50%{ opacity:0; } }
+  @media (prefers-reduced-motion: reduce){ .cursor{ animation:none; } }
+
+  h1.name{ font-size: clamp(30px, 8vw, 52px); font-weight:800; margin:0; line-height:1.08; color: var(--white); letter-spacing:-0.01em; }
+  h1.name.role{ color: var(--pink); margin-bottom: 22px; }
+  .divider{ width:64px; height:3px; background: var(--pink); margin: 4px 0 22px; }
+  .tags{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 22px; }
+  .tag{ display:flex; align-items:center; gap:6px; border:1px solid var(--line); background:#232323; color:var(--text); font-size:12px; padding:5px 12px; border-radius:5px; }
+  .tag .bullet{ width:6px; height:6px; border-radius:50%; }
+  .tag.bk .bullet{ background:#4ec9b0; }
+  .tag.ai .bullet{ background:#c586c0; }
+  .tag.ds .bullet{ background:#3b8eea; }
+  .tag.co{ color: var(--pink); border-color: rgba(233,60,172,0.3); }
+  .tag.co .bullet{ background: var(--pink); }
+  .status-line{ color: var(--muted); font-size:13px; margin-bottom: 24px; }
+  .bio{ max-width:560px; color:var(--text); font-size:14.5px; line-height:1.8; margin-bottom:30px; }
+  .bio b{ color: var(--blue); font-weight:600; }
+  .bio b.pink{ color: var(--pink); }
+  .btn-row{ display:flex; gap:12px; margin-bottom: 40px; flex-wrap:wrap; }
+  .btn{ display:flex; align-items:center; gap:8px; font-size:13px; padding:9px 18px; border-radius:5px; border:1px solid var(--line); color:var(--text); text-decoration:none; background:none; cursor:pointer; }
+  .btn.primary{ background: var(--blue); border-color: var(--blue); color:#fff; font-weight:600; }
+  .stats{ display:grid; grid-template-columns: repeat(4,1fr); border:1px solid var(--line); border-radius:6px; overflow:hidden; margin-bottom:26px; max-width:820px; }
+  .stat{ padding:20px; text-align:center; border-right:1px solid var(--line); background:#232323; }
+  .stat:last-child{ border-right:none; }
+  .stat .v{ font-size:22px; font-weight:800; color:var(--white); }
+  .stat .l{ font-size:10.5px; color:var(--muted); letter-spacing:0.08em; margin-top:4px; }
+  .links-row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .link-chip{ display:flex; align-items:center; gap:6px; font-size:12.5px; padding:7px 13px; border:1px solid var(--line); border-radius:5px; color:var(--text); text-decoration:none; }
+
+  h2.sec-title{ font-family:'JetBrains Mono',monospace; font-size: clamp(20px, 4vw, 26px); font-weight:800; color:var(--white); margin: 0 0 24px; }
+
+  .about-body{ max-width:640px; color:var(--text); font-size:14.5px; line-height:1.85; margin-bottom:30px; }
+  .about-body b{ color: var(--pink); }
+  .focus-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; max-width:700px; margin-bottom:30px; }
+  .focus-item{ border:1px solid var(--line); background:#232323; border-radius:6px; padding:14px 16px; font-size:13px; }
+  .edu-item{ border-left:2px solid var(--blue); padding-left:16px; margin-bottom:16px; }
+  .edu-item .school{ color:var(--white); font-weight:700; font-size:14px; }
+  .edu-item .yr{ color:var(--muted); font-size:12px; }
+
+  .skill-json{ display:grid; grid-template-columns: 1fr 1fr; gap:20px; max-width:820px; }
+  .skill-block{ border:1px solid var(--line); background:#181818; border-radius:6px; padding:18px 20px; }
+  .skill-block h3{ font-size:12px; letter-spacing:.08em; color:var(--muted); text-transform:uppercase; margin:0 0 14px; }
+  .skill-bar-row{ display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:12.5px; }
+  .skill-bar-row .lbl{ width:110px; color:var(--text); }
+  .skill-bar-track{ flex:1; height:6px; background:#2a2a2a; border-radius:3px; overflow:hidden; }
+  .skill-bar-fill{ height:100%; background: var(--blue); border-radius:3px; }
+  .skill-bar-fill.pink{ background: var(--pink); }
+
+  .timeline{ max-width:700px; }
+  .tl-item{ position:relative; padding-left:26px; padding-bottom:30px; border-left:2px solid var(--line); }
+  .tl-item:last-child{ border-color:transparent; padding-bottom:0; }
+  .tl-item::before{ content:""; position:absolute; left:-6px; top:2px; width:10px; height:10px; border-radius:50%; background:var(--blue); }
+  .tl-role{ color:var(--white); font-weight:700; font-size:15px; }
+  .tl-meta{ color:var(--muted); font-size:12px; margin: 2px 0 8px; }
+  .tl-desc{ color:var(--text); font-size:13.5px; line-height:1.7; max-width:600px; }
+
+  .proj-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:20px; max-width:900px; }
+  .proj-card{ border:1px solid var(--line); background:#232323; border-radius:6px; padding:20px; }
+  .proj-card .ptitle{ color:var(--white); font-weight:700; font-size:15px; margin-bottom:8px; }
+  .proj-card .pdesc{ color:var(--muted); font-size:12.5px; line-height:1.6; margin-bottom:14px; }
+  .proj-tags{ display:flex; gap:6px; flex-wrap:wrap; }
+  .proj-tags span{ font-size:10.5px; border:1px solid var(--line); border-radius:4px; padding:3px 8px; color:var(--text); }
+
+  .contact-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width:900px; }
+  .contact-label{ color: var(--comment); font-size:12px; margin-bottom:14px; letter-spacing:.06em; }
+  .find-item{ display:flex; align-items:center; gap:12px; margin-bottom:14px; border:1px solid var(--line); border-radius:6px; padding:10px 14px; background:#232323; }
+  .find-item .v{ font-size:13px; color:var(--text); }
+  .form-field{ margin-bottom:16px; }
+  .form-field label{ display:block; font-size:11.5px; color:var(--comment); margin-bottom:6px; }
+  .form-field input, .form-field textarea{ width:100%; background:#232323; border:1px solid var(--line); border-radius:5px; color:var(--text); font-family:inherit; font-size:13px; padding:9px 12px; }
+  .form-field textarea{ resize:vertical; min-height:90px; }
+  .send-btn{ background: var(--blue); color:#fff; border:none; font-family:inherit; font-size:13px; padding:10px 20px; border-radius:5px; cursor:pointer; }
+
+  .readme-box{ border:1px solid var(--line); background:#181818; border-radius:6px; padding:24px 28px; max-width:760px; font-size:13px; line-height:1.8; color:var(--text); }
+  .readme-box b{ color:var(--white); }
+  .readme-foot{ color:var(--muted); font-size:12px; margin-top:20px; display:flex; justify-content:space-between; max-width:760px; }
+
+  /* terminal panel */
+  .terminal-panel{ display:none; flex-direction:column; border-top:1px solid var(--line); background:#181818; height:190px; }
+  .terminal-panel.open{ display:flex; }
+  .terminal-tabs{ display:flex; align-items:center; justify-content:space-between; padding: 6px 14px 0; border-bottom:1px solid var(--line); }
+  .terminal-tabs .left{ display:flex; gap:18px; font-size:11.5px; color:var(--muted); }
+  .terminal-tabs .left span.on{ color:var(--white); border-bottom:2px solid var(--blue); padding-bottom:6px; }
+  .terminal-tabs button.term-close{ background:none; border:none; color:var(--muted); font-size:14px; cursor:pointer; padding: 4px 8px; }
+  .terminal-tabs button.term-close:hover{ color:#fff; }
+  .terminal-body{ flex:1; padding:10px 16px; font-size:12.5px; color:var(--text); overflow-y:auto; }
+  .terminal-body .prompt{ color: var(--comment); }
+
+  /* command palette */
+  .cmdk-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; align-items:flex-start; justify-content:center; padding-top:90px; }
+  .cmdk-overlay.open{ display:flex; }
+  .cmdk-box{ width: 480px; max-width:90vw; background:#252526; border:1px solid var(--line); border-radius:6px; box-shadow:0 12px 40px rgba(0,0,0,0.5); overflow:hidden; }
+  .cmdk-box input{ width:100%; background:#2a2a2a; border:none; border-bottom:1px solid var(--line); color:var(--text); font-family:inherit; font-size:14px; padding:12px 16px; }
+  .cmdk-list{ max-height:280px; overflow-y:auto; }
+  .cmdk-item{ display:flex; align-items:center; gap:10px; padding:9px 16px; font-size:13px; color:var(--text); cursor:pointer; }
+  .cmdk-item:hover, .cmdk-item.hi{ background: var(--blue); color:#fff; }
+
+  .statusbar{ background: var(--blue); display:flex; align-items:center; justify-content:space-between; padding:0 14px; font-size:11.5px; color:#fff; }
+  .statusbar .left, .statusbar .right{ display:flex; gap:14px; }
+  .statusbar button{ background:none; border:none; color:#fff; font-family:inherit; font-size:11.5px; cursor:pointer; }
+
+  /* ---------- toasts ---------- */
+  .toast-stack{ position:fixed; bottom: 30px; right: 20px; display:flex; flex-direction:column; gap:8px; z-index: 200; }
+  .toast{
+    background:#252526; border:1px solid var(--line); border-left:3px solid var(--blue);
+    color:var(--text); font-size:12.5px; padding:10px 16px; border-radius:5px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.4); opacity:0; transform:translateX(20px);
+    transition: all .25s ease; max-width:280px;
+  }
+  .toast.show{ opacity:1; transform:translateX(0); }
+
+  /* ---------- copilot panel ---------- */
+  .main.copilot-open{ grid-template-columns: 48px 260px 1fr 300px; }
+  .copilot-panel{ display:none; flex-direction:column; background: var(--sidebar); border-left:1px solid var(--line); overflow:hidden; }
+  .main.copilot-open .copilot-panel{ display:flex; }
+  .copilot-header{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid var(--line); font-size:12.5px; }
+  .copilot-header .title{ display:flex; align-items:center; gap:8px; color:var(--white); font-weight:700; }
+  .copilot-header button{ background:none; border:none; color:var(--muted); font-size:14px; cursor:pointer; }
+  .copilot-body{ flex:1; overflow-y:auto; padding:16px; }
+  .copilot-avatar{ width:44px; height:44px; border-radius:50%; background: linear-gradient(135deg, var(--blue), var(--pink)); display:flex; align-items:center; justify-content:center; font-size:20px; margin: 0 auto 12px; }
+  .copilot-greeting{ text-align:center; font-size:13px; color:var(--white); font-weight:700; margin-bottom:6px; }
+  .copilot-sub{ text-align:center; font-size:11.5px; color:var(--muted); margin-bottom:16px; line-height:1.6; }
+  .copilot-chip{ display:block; width:100%; text-align:left; background:#232323; border:1px solid var(--line); color:var(--text); font-family:inherit; font-size:11.5px; padding:9px 12px; border-radius:6px; margin-bottom:8px; cursor:pointer; }
+  .copilot-chip:hover{ border-color: var(--blue); }
+  .copilot-msg{ font-size:12px; padding:9px 12px; border-radius:6px; margin-bottom:10px; line-height:1.6; max-width:95%; }
+  .copilot-msg.user{ background: var(--blue); color:#fff; margin-left:auto; }
+  .copilot-msg.bot{ background:#232323; border:1px solid var(--line); color:var(--text); }
+  .copilot-footer{ border-top:1px solid var(--line); padding:10px 12px; }
+  .copilot-footer input{ width:100%; background:#232323; border:1px solid var(--line); color:var(--text); font-family:inherit; font-size:12px; padding:8px 10px; border-radius:5px; margin-bottom:6px; }
+  .copilot-meta{ display:flex; justify-content:space-between; font-size:10px; color:var(--muted); }
+
+  /* ---------- dino game ---------- */
+  .dino-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:300; align-items:center; justify-content:center; }
+  .dino-overlay.open{ display:flex; }
+  .dino-box{ background:#252526; border:1px solid var(--line); border-radius:8px; padding:18px; box-shadow:0 12px 40px rgba(0,0,0,0.5); }
+  .dino-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:12.5px; color:var(--text); }
+  .dino-head button{ background:none; border:none; color:var(--muted); font-size:15px; cursor:pointer; }
+  #dinoCanvas{ background:#101010; border:1px solid var(--line); border-radius:4px; display:block; }
+  .dino-hint{ text-align:center; color:var(--muted); font-size:11px; margin-top:8px; }
+
+  /* ===================== RESPONSIVE ===================== */
+
+  /* Tablet: 769px - 1024px — keep sidebar, trim chrome a bit */
+  @media (max-width: 1024px){
+    .sidebar{ width: 220px; }
+    .main{ grid-template-columns: 48px 220px 1fr; }
+    .main.copilot-open{ grid-template-columns: 48px 220px 1fr 260px; }
+    section.page{ padding: 40px 36px 60px; }
+  }
+
+  /* Small tablet / large phone: <= 900px — keep the icon rail, sidebar just gets
+     narrower and PUSHES the code area (same push behavior as desktop, never overlays it) */
+  @media (max-width: 900px){
+    .sidebar{ width: 200px; }
+    .main{ grid-template-columns: 48px 200px 1fr; }
+    .main.sidebar-hidden{ grid-template-columns: 48px 0px 1fr; }
+    .main.copilot-open{ grid-template-columns: 48px 200px 1fr 220px; }
+    .copilot-panel{ display:none; }
+    .menu{ display:none; }
+    .mobile-menu{ display:block; }
+    .titlebar-search{ display:none; }
+    section.page{ padding: 34px 26px 55px; }
+    .stats, .focus-grid, .skill-json, .proj-grid, .contact-grid{ grid-template-columns:1fr; }
+    .terminal-panel{ height: 150px; }
+    #dinoCanvas{ max-width: 100%; height:auto; }
+  }
+
+  /* Phone: <= 600px — sidebar narrows further (still pushes, never covers the code),
+     titlebar and spacing tighten too */
+  @media (max-width: 600px){
+    .sidebar{ width: 170px; }
+    .main{ grid-template-columns: 44px 170px 1fr; }
+    .main.sidebar-hidden{ grid-template-columns: 44px 0px 1fr; }
+    .activitybar{ width:44px; }
+    .titlebar{ gap:6px; padding:0 6px; }
+    .update-btn{ padding:5px 9px; font-size:11px; }
+    .win-controls button{ width:32px; }
+    section.page{ padding: 26px 18px 46px; }
+    .btn-row, .cta-row, .links-row, .tags{ gap:8px; }
+    .btn{ padding:8px 14px; font-size:12.5px; }
+    .breadcrumb{ padding: 6px 14px; font-size:11px; }
+    .tab{ padding: 8px 8px 8px 12px; font-size:12px; }
+    .about-grid, .contact-grid{ gap: 24px; }
+    .dino-box{ padding:12px; max-width: 94vw; }
+    .cmdk-box{ width: 94vw; }
+  }
+
+  /* Very small phone: <= 380px */
+  @media (max-width: 380px){
+    .stat{ padding:14px 8px; }
+    .stat .v{ font-size:18px; }
+    .tag{ font-size:11px; padding:4px 9px; }
+    .find-item{ padding:8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="titlebar">
+    <div class="vs-icon">◆</div>
+    <div class="menu" id="menubar">
+      <div class="menu-item" data-menu="file">
+        <button>File</button>
+        <div class="dropdown">
+          <button data-action="none">New File <span class="shortcut">Ctrl+N</span></button>
+          <button data-action="none">Open Folder...</button>
+          <button data-action="none">Save <span class="shortcut">Ctrl+S</span></button>
+          <button data-action="close-tab">Close Editor <span class="shortcut">Ctrl+W</span></button>
+          <hr>
+          <button data-action="none">Exit</button>
+        </div>
+      </div>
+      <div class="menu-item" data-menu="edit">
+        <button>Edit</button>
+        <div class="dropdown">
+          <button data-action="none">Undo <span class="shortcut">Ctrl+Z</span></button>
+          <button data-action="none">Redo <span class="shortcut">Ctrl+Y</span></button>
+          <hr>
+          <button data-action="none">Cut</button>
+          <button data-action="none">Copy</button>
+          <button data-action="none">Paste</button>
+          <hr>
+          <button data-action="open-cmdk">Find <span class="shortcut">Ctrl+F</span></button>
+        </div>
+      </div>
+      <div class="menu-item" data-menu="selection">
+        <button>Selection</button>
+        <div class="dropdown">
+          <button data-action="none">Select All <span class="shortcut">Ctrl+A</span></button>
+          <button data-action="none">Expand Selection</button>
+          <button data-action="none">Copy Line Up</button>
+          <button data-action="none">Copy Line Down</button>
+        </div>
+      </div>
+      <div class="menu-item" data-menu="view">
+        <button>View</button>
+        <div class="dropdown">
+          <button data-action="open-cmdk">Command Palette <span class="shortcut">Ctrl+P</span></button>
+          <button data-action="toggle-sidebar">Toggle Sidebar <span class="shortcut">Ctrl+B</span></button>
+          <button data-action="toggle-terminal">Toggle Terminal <span class="shortcut">Ctrl+`</span></button>
+          <hr>
+          <button data-action="zoom-in">Zoom In <span class="shortcut">Ctrl+=</span></button>
+          <button data-action="zoom-out">Zoom Out <span class="shortcut">Ctrl+-</span></button>
+          <button data-action="zoom-reset">Reset Zoom</button>
+        </div>
+      </div>
+      <div class="menu-item" data-menu="go">
+        <button>Go</button>
+        <div class="dropdown">
+          <button data-action="open-cmdk">Go to File... <span class="shortcut">Ctrl+P</span></button>
+          <button data-action="none">Go Back</button>
+          <button data-action="none">Go Forward</button>
+        </div>
+      </div>
+      <div class="menu-item" data-menu="run">
+        <button>Run</button>
+        <div class="dropdown">
+          <button data-action="none">Run Without Debugging <span class="shortcut">Ctrl+F5</span></button>
+          <button data-action="none">Start Debugging <span class="shortcut">F5</span></button>
+          <button data-action="none">Open Configurations</button>
+        </div>
+      </div>
+    </div>
+    <div class="menu-item mobile-menu" data-menu="mobile">
+      <button title="Menu">☰</button>
+      <div class="dropdown">
+        <button data-action="open-cmdk">🔍 Go to file / Command Palette</button>
+        <button data-action="toggle-sidebar">📁 Toggle Sidebar</button>
+        <button data-action="toggle-terminal">⌨ Toggle Terminal</button>
+        <hr>
+        <button data-action="zoom-in">Zoom In</button>
+        <button data-action="zoom-out">Zoom Out</button>
+      </div>
+    </div>
+    <div class="titlebar-search"><input id="titlebar-search-input" type="text" placeholder="portfolio" readonly></div>
+    <div class="titlebar-right">
+      <button class="update-btn">Update</button>
+      <button class="update-btn" id="btn-copilot" style="background:linear-gradient(135deg,var(--blue),var(--pink));">✨ Copilot</button>
+      <span style="color:var(--muted); font-size:13px;">⧉</span>
+      <div class="win-controls">
+        <button title="Minimize">—</button>
+        <button title="Maximize">▢</button>
+        <button class="close" title="Close">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main" id="mainGrid">
+
+    <div class="activitybar">
+      <button class="icon active" data-panel="explorer" title="Explorer">
+        <svg viewBox="0 0 24 24"><path d="M4 4h9l4 4v12H4z"/><path d="M13 4v4h4"/></svg>
+      </button>
+      <button class="icon" data-panel="search" title="Search">
+        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg>
+      </button>
+      <button class="icon" data-panel="git" title="Source Control" style="position:relative;">
+        <svg viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="7" r="2"/><path d="M6 7v10"/><path d="M6 12c0-3 3-3 6-3h4"/></svg>
+        <span class="badge">2</span>
+      </button>
+      <button class="icon" data-action-toast title="Run and Debug">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z"/></svg>
+      </button>
+      <button class="icon" data-panel="extensions" title="Extensions">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="1"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1"/></svg>
+      </button>
+      <button class="icon" data-action-toast title="Remote Explorer">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
+      </button>
+      <button class="icon" data-action-toast title="Live Share">
+        <svg viewBox="0 0 24 24"><path d="M12 3c3 4 6 8 6 11.5A6 6 0 0 1 6 14.5C6 11 9 7 12 3z"/></svg>
+      </button>
+      <button class="icon" data-action-toast title="Testing">
+        <svg viewBox="0 0 24 24"><path d="M9 2v6.5L3.5 19a1.5 1.5 0 0 0 1.3 2.2h14.4A1.5 1.5 0 0 0 20.5 19L15 8.5V2"/><path d="M9 2h6"/><path d="M7.5 15h9"/></svg>
+      </button>
+      <button class="icon" data-action-toast title="Python">
+        <svg viewBox="0 0 24 24"><path d="M8 2.5h5A2.5 2.5 0 0 1 15.5 5v3.5H8A2.5 2.5 0 0 0 5.5 11v2H2.5V7A4.5 4.5 0 0 1 7 2.5z"/><path d="M16 21.5h-5A2.5 2.5 0 0 1 8.5 19v-3.5H16a2.5 2.5 0 0 0 2.5-2.5v-2h3V17a4.5 4.5 0 0 1-4.5 4.5z"/></svg>
+      </button>
+      <button class="icon" data-action-toast title="Database">
+        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.6 3.6 3 8 3s8-1.4 8-3v-13"/><path d="M4 12c0 1.6 3.6 3 8 3s8-1.4 8-3"/></svg>
+      </button>
+      <button class="icon" data-action-toast title="Notebook">
+        <svg viewBox="0 0 24 24"><path d="M4.5 4h12A2.5 2.5 0 0 1 19 6.5V20H7a2.5 2.5 0 0 1-2.5-2.5z"/><path d="M4.5 4v13.5A2.5 2.5 0 0 0 7 20"/><path d="M4.5 8h2M4.5 12h2"/></svg>
+      </button>
+      <button class="icon" id="btn-copilot-icon" title="Copilot Chat">
+        <svg viewBox="0 0 24 24"><path d="M20 14.5a2 2 0 0 1-2 2H8l-4.5 3.5V6a2 2 0 0 1 2-2h12.5a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <button class="icon" data-action-toast title="Runner">
+        <svg viewBox="0 0 24 24"><path d="M13 2 5 14h5.5L9.5 22 19 9h-6z"/></svg>
+      </button>
+      <button class="icon" id="btn-more" title="More">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+      </button>
+      <div class="spacer"></div>
+      <button class="icon" id="btn-account" title="Account">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>
+      </button>
+      <button class="icon" id="btn-settings" title="Settings" style="position:relative;">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 13.5a7.4 7.4 0 0 0 0-3l2-1.3-1.5-2.6-2.3.8a7.3 7.3 0 0 0-2.6-1.5L14.2 3.5h-3l-.4 2.4a7.3 7.3 0 0 0-2.6 1.5l-2.3-.8L4.4 9.2l2 1.3a7.4 7.4 0 0 0 0 3l-2 1.3 1.5 2.6 2.3-.8a7.3 7.3 0 0 0 2.6 1.5l.4 2.4h3l.4-2.4a7.3 7.3 0 0 0 2.6-1.5l2.3.8 1.5-2.6z"/></svg>
+        <span class="badge">1</span>
+      </button>
+
+      <div class="popup" id="popup-account">
+        <div class="popup-label">SIGNED IN AS</div>
+        <button class="action-item">👤 Avajit Kumar Kewrat</button>
+        <hr>
+        <button class="action-item">Account Settings</button>
+        <button class="action-item">Sign Out</button>
+      </div>
+
+      <div class="popup" id="popup-more">
+        <div class="popup-label">VIEWS</div>
+        <button class="action-item" data-action="toggle-terminal">Terminal</button>
+        <button class="action-item" data-action="open-cmdk">Command Palette</button>
+        <hr>
+        <div class="popup-label">CUSTOMIZE</div>
+        <button class="action-item">Layout Control</button>
+      </div>
+
+      <div class="popup" id="popup-settings">
+        <div class="popup-label">COLOR THEME</div>
+        <button class="theme-item" data-theme="dark"><span class="theme-dot" style="background:#3b8eea;"></span>Portfolio Dark ✓</button>
+        <button class="theme-item" data-theme="rose"><span class="theme-dot" style="background:#ea9a97;"></span>Rosé Pine</button>
+        <button class="theme-item" data-theme="tokyo"><span class="theme-dot" style="background:#7aa2f7;"></span>Tokyo Night</button>
+        <button class="theme-item" data-theme="nord"><span class="theme-dot" style="background:#88c0d0;"></span>Nord</button>
+        <button class="theme-item" data-theme="gruvbox"><span class="theme-dot" style="background:#fe8019;"></span>Gruvbox</button>
+        <hr>
+        <div class="popup-label">QUICK ACTIONS</div>
+        <button class="action-item" data-action="open-cmdk">Command Palette <span class="shortcut" style="margin-left:auto;color:var(--muted);">Ctrl+P</span></button>
+        <button class="action-item" data-action="toggle-terminal">Toggle Terminal</button>
+        <button class="action-item" data-action="toggle-sidebar">Toggle Sidebar</button>
+      </div>
+    </div>
+
+    <aside class="sidebar">
+      <div class="panel active" id="panel-explorer">
+        <div class="sidebar-label">PORTFOLIO</div>
+        <div class="folder-name">▾ PORTFOLIO</div>
+        <button class="file selected" data-target="page-home"><span class="ext icon-tsx">◆</span><span class="name" style="color:#fff;">home.tsx</span></button>
+        <button class="file" data-target="page-about"><span class="ext icon-html">◆</span><span class="name">about.html</span></button>
+        <button class="file" data-target="page-skills"><span class="ext icon-json">◆</span><span class="name">skills.json</span></button>
+        <button class="file" data-target="page-experience"><span class="ext icon-ts">◆</span><span class="name">experience.ts</span></button>
+        <button class="file" data-target="page-projects"><span class="ext icon-js">◆</span><span class="name">projects.js</span></button>
+        <button class="file" data-target="page-contact"><span class="ext icon-css">◆</span><span class="name">contact.css</span></button>
+        <button class="file" data-target="page-readme"><span class="ext icon-md">◆</span><span class="name">README.md</span></button>
+        <button class="file" id="resume-file"><span class="ext icon-pdf">◆</span><span class="name">Avajit_Kumar_Kewrat_Resume.pdf</span></button>
+      </div>
+
+      <div class="panel" id="panel-search">
+        <div class="search-box"><input type="text" id="search-input" placeholder="Search files..."></div>
+        <div id="search-results"></div>
+      </div>
+
+      <div class="panel" id="panel-git">
+        <div class="git-box">
+          <div class="sidebar-label" style="padding-left:0;">SOURCE CONTROL</div>
+          <textarea class="git-msg" rows="2" placeholder="Message (Ctrl+Enter to commit)"></textarea>
+          <button class="git-commit-btn">✓ Commit</button>
+          <div class="popup-label" style="padding-left:0;">CHANGES (2)</div>
+          <div class="git-file"><span>home.tsx</span><span class="m">M</span></div>
+          <div class="git-file"><span>skills.json</span><span class="m">M</span></div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-extensions">
+        <div class="sidebar-label">INSTALLED</div>
+        <div class="ext-item"><div class="ext-icon" style="background:#3178c6;color:#fff;">TS</div><div><div class="ext-name">Prettier</div><div class="ext-desc">Code formatter</div></div></div>
+        <div class="ext-item"><div class="ext-icon" style="background:#e93cac;color:#fff;">◆</div><div><div class="ext-name">Copilot</div><div class="ext-desc">AI pair programmer</div></div></div>
+        <div class="ext-item"><div class="ext-icon" style="background:#4ec9b0;color:#1e1e1e;">JS</div><div><div class="ext-name">ESLint</div><div class="ext-desc">Linting utility</div></div></div>
+        <div class="ext-item"><div class="ext-icon" style="background:#e34c26;color:#fff;">►</div><div><div class="ext-name">Live Server</div><div class="ext-desc">Local dev server</div></div></div>
+      </div>
+    </aside>
+
+    <section class="editor">
+      <div class="tabs" id="tabs"></div>
+      <div class="breadcrumb">portfolio &gt; src &gt; <span id="crumb-file">home.tsx</span></div>
+
+      <div class="content" id="content">
+
+        <section class="page" id="page-home">
+          <div class="ln">// hello world !! Welcome to my portfolio</div>
+          <h1 class="name">Avajit Kumar</h1>
+          <h1 class="name role">Kewrat<span class="cursor"></span></h1>
+          <div class="divider"></div>
+          <div class="tags">
+            <span class="tag bk"><span class="bullet"></span>Full-Stack Developer</span>
+            <span class="tag ai"><span class="bullet"></span>Backend Engineer</span>
+            <span class="tag ds"><span class="bullet"></span>Published Researcher</span>
+            <span class="tag co">@accelix.ai</span>
+          </div>
+          <div class="status-line" id="typewriter-line"></div>
+          <p class="bio">I live at the crossroads of <b>full-stack engineering</b>, <b class="pink">secure authentication systems</b>, and <b>scalable backend architecture</b>. I build SaaS systems that are genuinely fast, secure, and production-ready.</p>
+          <div class="btn-row">
+            <button class="btn primary" data-target="page-projects">📁 Projects</button>
+            <button class="btn" data-target="page-about">👤 About Me</button>
+            <button class="btn" data-target="page-contact">✉ Contact</button>
+          </div>
+          <div class="stats">
+            <div class="stat"><div class="v">4+</div><div class="l">PROJECTS</div></div>
+            <div class="stat"><div class="v">200+</div><div class="l">DSA SOLVED</div></div>
+            <div class="stat"><div class="v">1</div><div class="l">IEEE PUBLICATION</div></div>
+            <div class="stat"><div class="v">8.01</div><div class="l">CGPA</div></div>
+          </div>
+          <div class="links-row">
+            <a class="link-chip" href="https://github.com/avajit" target="_blank" rel="noopener">GitHub</a>
+            <a class="link-chip" href="https://linkedin.com/in/avajitkumar-kewrat" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="link-chip" href="https://leetcode.com/u/avajitkumarkewrat" target="_blank" rel="noopener">LeetCode</a>
+            <a class="link-chip" href="mailto:mandalavijeet12@gmail.com">Email</a>
+          </div>
+        </section>
+
+        <section class="page" id="page-about">
+          <h2 class="sec-title">About Me</h2>
+          <p class="about-body">I'm a <b>Full-Stack Developer</b> with production experience building scalable SaaS systems at an AI-powered startup, <b>accelix.ai</b>. Proficient across the entire stack — React.js frontends, Node.js/Express.js and FastAPI backends, PostgreSQL and MongoDB databases. Skilled in secure authentication (JWT, MFA, Google SSO, RBAC), REST API design, and Redis caching. Published researcher at IEEE ICCCA 2025, with work on real-time AI systems.</p>
+          <div class="focus-grid">
+            <div class="focus-item">🎯 Currently: Product Engineer Intern @ accelix.ai</div>
+            <div class="focus-item">📄 Published: IEEE ICCCA 2025 (real-time AI systems)</div>
+            <div class="focus-item">🛠 Recently shipped: JWT/MFA/SSO auth + RBAC system</div>
+            <div class="focus-item">🧩 200+ DSA problems solved on LeetCode</div>
+          </div>
+          <h2 class="sec-title" style="font-size:18px;">Education</h2>
+          <div class="edu-item"><div class="school">Parul University – PIET, Vadodara — B.Tech, Computer Science &amp; Engineering</div><div class="yr">2022 – 2026 · CGPA 8.01/10</div></div>
+          <div class="edu-item"><div class="school">Kantipur Secondary School, Biratnagar, Nepal — Higher Secondary (12th Grade)</div><div class="yr">2022 · 81.75%</div></div>
+        </section>
+
+        <section class="page" id="page-skills">
+          <h2 class="sec-title">Skills</h2>
+          <div class="skill-json">
+            <div class="skill-block">
+              <h3>Frontend</h3>
+              <div class="skill-bar-row"><span class="lbl">React.js</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%"></div></div></div>
+              <div class="skill-bar-row"><span class="lbl">JavaScript ES6+</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:88%"></div></div></div>
+              <div class="skill-bar-row"><span class="lbl">HTML5 / CSS3</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%"></div></div></div>
+            </div>
+            <div class="skill-block">
+              <h3>Backend</h3>
+              <div class="skill-bar-row"><span class="lbl">Node.js / Express</span><div class="skill-bar-track"><div class="skill-bar-fill pink" style="width:90%"></div></div></div>
+              <div class="skill-bar-row"><span class="lbl">FastAPI (Python)</span><div class="skill-bar-track"><div class="skill-bar-fill pink" style="width:82%"></div></div></div>
+              <div class="skill-bar-row"><span class="lbl">JWT / MFA / SSO / RBAC</span><div class="skill-bar-track"><div class="skill-bar-fill pink" style="width:88%"></div></div></div>
+              <div class="skill-bar-row"><span class="lbl">Redis</span><div class="skill-bar-track"><div class="skill-bar-fill pink" style="width:78%"></div></div></div>
+            </div>
+            <div class="skill-block">
+              <h3>Databases &amp; ORMs</h3>
+              <div class="skill-bar-row"><span class="lbl">PostgreSQL</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%"></div></div></div>
+              <div class="skill-bar-row"><span class="lbl">MongoDB</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:78%"></div></div></div>
+              <div class="skill-bar-row"><span class="lbl">Prisma / SQLAlchemy</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:82%"></div></div></div>
+            </div>
+            <div class="skill-block">
+              <h3>Tools &amp; Cloud</h3>
+              <div class="skill-bar-row"><span class="lbl">Docker</span><div class="skill-bar-track"><div class="skill-bar-fill pink" style="width:80%"></div></div></div>
+              <div class="skill-bar-row"><span class="lbl">Git / GitHub</span><div class="skill-bar-track"><div class="skill-bar-fill pink" style="width:88%"></div></div></div>
+              <div class="skill-bar-row"><span class="lbl">MinIO (S3-compatible)</span><div class="skill-bar-track"><div class="skill-bar-fill pink" style="width:75%"></div></div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-experience">
+          <h2 class="sec-title">Experience</h2>
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-role">Product Engineer Intern — Dignified Technology Pvt. Ltd. (accelix.ai)</div>
+              <div class="tl-meta">Vadodara, India · February 2026 – Present</div>
+              <div class="tl-desc">Built scalable backend APIs with Node.js and Express.js for an AI-powered hardware validation SaaS platform. Implemented JWT, MFA, Google SSO, and RBAC for secure authentication. Designed PostgreSQL schemas with Prisma ORM, added Redis-based rate limiting, integrated MinIO object storage, and containerized services with Docker. Also built FastAPI (Python) REST APIs using SQLAlchemy alongside the Node.js backend.</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-role">Published Researcher — IEEE ICCCA 2025</div>
+              <div class="tl-meta">Greater Noida, India · November 2025</div>
+              <div class="tl-desc">Co-authored "Live Attendance System Using Face Recognition," a real-time facial recognition system built with Python, OpenCV, and FaceNet, logging attendance to MongoDB via a Tkinter GUI. Published on IEEE Xplore, January 2026.</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-role">Full-Stack Web Development — Self-directed &amp; Udemy Certification</div>
+              <div class="tl-meta">2022 – 2025</div>
+              <div class="tl-desc">Built and shipped multiple independent projects (React.js, Node.js, REST APIs, SQL &amp; NoSQL) while solving 200+ DSA problems on LeetCode and completing NPTEL courses in Computer Networks and IoT.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-projects">
+          <h2 class="sec-title">Projects</h2>
+          <div class="proj-grid">
+            <div class="proj-card">
+              <div class="ptitle">AKMart — E-Commerce Website</div>
+              <div class="pdesc">Responsive e-commerce app with product listing, dynamic cart, and client-side routing, built with a component-based React architecture.</div>
+              <div class="proj-tags"><span>React.js</span><span>Routing</span><span>Responsive UI</span></div>
+            </div>
+            <div class="proj-card">
+              <div class="ptitle">WorldAtlas — Country Explorer</div>
+              <div class="pdesc">REST API-based explorer covering 250+ countries with real-time search and region filtering, built for speed with Vite.</div>
+              <div class="proj-tags"><span>React.js</span><span>Vite</span><span>REST API</span></div>
+            </div>
+            <div class="proj-card">
+              <div class="ptitle">LuxVault — E-Commerce Storefront</div>
+              <div class="pdesc">Storefront with product filtering, category browsing, and a persistent cart using LocalStorage — pure HTML, CSS &amp; JS.</div>
+              <div class="proj-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
+            </div>
+            <div class="proj-card">
+              <div class="ptitle">Live Attendance System — Face Recognition</div>
+              <div class="pdesc">Real-time facial recognition attendance system using OpenCV and FaceNet, logging to MongoDB via a Tkinter GUI. Published at IEEE ICCCA 2025.</div>
+              <div class="proj-tags"><span>Python</span><span>OpenCV</span><span>FaceNet</span><span>MongoDB</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-contact">
+          <h2 class="sec-title">Contact</h2>
+          <div class="contact-grid">
+            <div>
+              <div class="contact-label">// FIND ME ON</div>
+              <div class="find-item"><span class="v">📧 mandalavijeet12@gmail.com</span></div>
+              <div class="find-item"><span class="v">📱 +91-8235717668</span></div>
+              <div class="find-item"><span class="v">📍 Vadodara, India</span></div>
+              <div class="find-item"><span class="v">🔗 linkedin.com/in/avajitkumar-kewrat</span></div>
+              <div class="find-item"><span class="v">🐙 github.com/avajit</span></div>
+              <div class="find-item"><span class="v">💻 leetcode.com/u/avajitkumarkewrat</span></div>
+            </div>
+            <div>
+              <div class="contact-label">// SEND A MESSAGE</div>
+              <div class="form-field"><label>YOUR_NAME *</label><input type="text" placeholder="string"></div>
+              <div class="form-field"><label>YOUR_EMAIL *</label><input type="email" placeholder="string"></div>
+              <div class="form-field"><label>MESSAGE *</label><textarea placeholder="'your message'"></textarea></div>
+              <button class="send-btn">→ send_message()</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-readme">
+          <h2 class="sec-title">Connect</h2>
+          <div class="readme-box">
+            <b>Email:</b> mandalavijeet12@gmail.com<br>
+            <b>Phone:</b> +91-8235717668<br>
+            <b>GitHub:</b> avajit<br>
+            <b>LinkedIn:</b> avajitkumar-kewrat<br>
+            <b>LeetCode:</b> avajitkumarkewrat<br><br>
+            This portfolio — including its design, layout, and VS Code theme — was designed and built by <b>Avajit Kumar Kewrat</b>. Willing to relocate · based in Vadodara, India.
+          </div>
+          <div class="readme-foot"><span>© 2026 Avajit Kumar Kewrat — All rights reserved</span><span>Made with ♥</span></div>
+        </section>
+
+        <div class="empty-state" id="empty-state">
+          <div class="big">◆</div>
+          <div>No editor open</div>
+          <div style="font-size:12px;">Select a file from the sidebar to continue</div>
+        </div>
+
+      </div>
+
+      <div class="terminal-panel" id="terminal-panel">
+        <div class="terminal-tabs">
+          <div class="left"><span class="on">TERMINAL</span><span>PROBLEMS</span><span>OUTPUT</span></div>
+          <button class="term-close" data-action="toggle-terminal">✕</button>
+        </div>
+        <div class="terminal-body">
+          <div>Welcome! Type 'help' to see available commands.</div>
+          <div style="margin-top:8px;"><span class="prompt">avajit@portfolio</span> ~ $ <span class="cursor" style="height:12px;"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="copilot-panel" id="copilot-panel">
+      <div class="copilot-header">
+        <div class="title">✨ Avajit's Copilot</div>
+        <button id="btn-copilot-close">✕</button>
+      </div>
+      <div class="copilot-body" id="copilot-body">
+        <div class="copilot-avatar">🤖</div>
+        <div class="copilot-greeting">Hi! I'm Avajit's Copilot 👋</div>
+        <div class="copilot-sub">Ask me anything about his projects, skills, experience, or achievements.</div>
+        <button class="copilot-chip" data-q="about">Tell me about Avajit?</button>
+        <button class="copilot-chip" data-q="projects">What projects has he built?</button>
+        <button class="copilot-chip" data-q="experience">Tell me about his work experience?</button>
+        <button class="copilot-chip" data-q="stack">What's his tech stack?</button>
+        <button class="copilot-chip" data-q="contact">How can I contact him?</button>
+      </div>
+      <div class="copilot-footer">
+        <input type="text" id="copilot-input" placeholder="Ask about projects, experience, skills...">
+        <div class="copilot-meta"><span>3 msgs left</span><span>AI can make mistakes</span></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="statusbar">
+    <div class="left"><span>⎇ main</span><span>↑1 ↓3</span></div>
+    <div class="right">
+      <button data-action="toggle-terminal">⌨ Terminal</button>
+      <span id="status-lang">TypeScript React</span><span>UTF-8</span><span>Prettier</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="cmdk-overlay" id="cmdk-overlay">
+  <div class="cmdk-box">
+    <input type="text" id="cmdk-input" placeholder="Go to file, or run a command...">
+    <div class="cmdk-list" id="cmdk-list"></div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<div class="dino-overlay" id="dino-overlay">
+  <div class="dino-box">
+    <div class="dino-head">
+      <span>🦖 Portfolio Runner — Space / Click to jump</span>
+      <button id="dino-close">✕</button>
+    </div>
+    <canvas id="dinoCanvas" width="560" height="180"></canvas>
+    <div class="dino-hint" id="dino-hint">Press Space or click the game to start</div>
+  </div>
+</div>
+
+<script>
+  const fileMeta = {
+    'page-home': {name:'home.tsx', ext:'◆', color:'var(--icon-ts)', lang:'TypeScript React'},
+    'page-about': {name:'about.html', ext:'◆', color:'var(--icon-html)', lang:'HTML'},
+    'page-skills': {name:'skills.json', ext:'◆', color:'var(--icon-json)', lang:'JSON'},
+    'page-experience': {name:'experience.ts', ext:'◆', color:'var(--icon-ts)', lang:'TypeScript'},
+    'page-projects': {name:'projects.js', ext:'◆', color:'var(--icon-js)', lang:'JavaScript'},
+    'page-contact': {name:'contact.css', ext:'◆', color:'var(--icon-css)', lang:'CSS'},
+    'page-readme': {name:'README.md', ext:'◆', color:'var(--icon-md)', lang:'Markdown'}
+  };
+  const sectionOrder = Object.keys(fileMeta);
+
+  let openTabs = [...sectionOrder];
+  let activeTab = 'page-home';
+
+  const content = document.getElementById('content');
+  const tabsEl = document.getElementById('tabs');
+  const crumb = document.getElementById('crumb-file');
+  const statusLang = document.getElementById('status-lang');
+  const emptyState = document.getElementById('empty-state');
+  const mainGrid = document.getElementById('mainGrid');
+
+  function renderTabs(){
+    tabsEl.innerHTML = '';
+    openTabs.forEach(id => {
+      const meta = fileMeta[id];
+      const tab = document.createElement('button');
+      tab.className = 'tab' + (id === activeTab ? ' active' : '');
+      tab.dataset.target = id;
+      tab.innerHTML = '<span class="ext" style="color:'+meta.color+';">'+meta.ext+'</span> '+meta.name+
+        '<span class="tab-close" data-close="'+id+'">✕</span>';
+      tabsEl.appendChild(tab);
+    });
+  }
+
+  function setActiveFileUI(target){
+    document.querySelectorAll('.file').forEach(f => f.classList.toggle('selected', f.dataset.target === target));
+    if(fileMeta[target]){
+      crumb.textContent = fileMeta[target].name;
+      statusLang.textContent = fileMeta[target].lang;
+    }
+  }
+
+  function openAndScroll(target){
+    if(!openTabs.includes(target)){
+      const insertAt = sectionOrder.indexOf(target);
+      let placed = false;
+      for(let i=0;i<openTabs.length;i++){
+        if(sectionOrder.indexOf(openTabs[i]) > insertAt){ openTabs.splice(i,0,target); placed = true; break; }
+      }
+      if(!placed) openTabs.push(target);
+    }
+    activeTab = target;
+    renderTabs();
+    setActiveFileUI(target);
+    emptyState.classList.remove('show');
+    const el = document.getElementById(target);
+    if(el){ el.style.display = ''; el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  }
+
+  function closeTab(id, evt){
+    if(evt) evt.stopPropagation();
+    const idx = openTabs.indexOf(id);
+    if(idx === -1) return;
+    openTabs.splice(idx,1);
+
+    if(openTabs.length === 0){
+      activeTab = null;
+      renderTabs();
+      emptyState.classList.add('show');
+      crumb.textContent = '';
+      return;
+    }
+    if(activeTab === id){
+      const nextIdx = Math.min(idx, openTabs.length - 1);
+      activeTab = openTabs[nextIdx];
+      setActiveFileUI(activeTab);
+      const el = document.getElementById(activeTab);
+      if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+    renderTabs();
+  }
+
+  tabsEl.addEventListener('click', (e) => {
+    const closeBtn = e.target.closest('.tab-close');
+    if(closeBtn){ closeTab(closeBtn.dataset.close, e); return; }
+    const tab = e.target.closest('.tab');
+    if(tab){ openAndScroll(tab.dataset.target); }
+  });
+
+  document.querySelectorAll('.file[data-target], [data-target].btn').forEach(el => {
+    el.addEventListener('click', () => openAndScroll(el.dataset.target));
+  });
+
+  // keep active tab in sync while scrolling
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting && openTabs.includes(entry.target.id)){
+        activeTab = entry.target.id;
+        renderTabs();
+        setActiveFileUI(entry.target.id);
+      }
+    });
+  }, { root: content, threshold: 0.55 });
+  sectionOrder.forEach(id => { const el = document.getElementById(id); if(el) observer.observe(el); });
+
+  renderTabs();
+
+  /* on narrow screens, start with the file panel collapsed so it does not overlay content */
+  if(window.matchMedia("(max-width: 900px)").matches){
+    mainGrid.classList.add("sidebar-hidden");
+  }
+
+  /* ---------- Menubar dropdowns ---------- */
+  const menuItems = document.querySelectorAll('.menu-item');
+  function closeAllMenus(){ menuItems.forEach(m => m.classList.remove('open')); }
+  menuItems.forEach(item => {
+    item.querySelector(':scope > button').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      closeAllMenus();
+      if(!isOpen) item.classList.add('open');
+    });
+  });
+  document.addEventListener('click', () => { closeAllMenus(); closeAllPopups(); });
+
+  /* ---------- Actions from menu / popup buttons ---------- */
+  function runAction(action){
+    if(action === 'toggle-sidebar'){ mainGrid.classList.toggle('sidebar-hidden'); }
+    else if(action === 'toggle-terminal'){ document.getElementById('terminal-panel').classList.toggle('open'); }
+    else if(action === 'open-cmdk'){ openCmdk(); }
+    else if(action === 'zoom-in'){ adjustZoom(1); }
+    else if(action === 'zoom-out'){ adjustZoom(-1); }
+    else if(action === 'zoom-reset'){ document.documentElement.style.fontSize = ''; }
+    else if(action === 'close-tab'){ if(activeTab) closeTab(activeTab); }
+  }
+  document.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const action = btn.dataset.action;
+      if(action && action !== 'none'){ runAction(action); }
+      closeAllMenus();
+      closeAllPopups();
+    });
+  });
+
+  let zoomLevel = 0;
+  function adjustZoom(dir){
+    zoomLevel = Math.max(-2, Math.min(4, zoomLevel + dir));
+    document.documentElement.style.fontSize = (16 + zoomLevel * 1.5) + 'px';
+  }
+
+  /* ---------- Popups (account / settings / more) ---------- */
+  const popupAccount = document.getElementById('popup-account');
+  const popupSettings = document.getElementById('popup-settings');
+  const popupMore = document.getElementById('popup-more');
+  function closeAllPopups(){ popupAccount.classList.remove('open'); popupSettings.classList.remove('open'); popupMore.classList.remove('open'); }
+  document.getElementById('btn-account').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = popupAccount.classList.contains('open');
+    closeAllPopups(); closeAllMenus();
+    if(!isOpen) popupAccount.classList.add('open');
+  });
+  document.getElementById('btn-settings').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = popupSettings.classList.contains('open');
+    closeAllPopups(); closeAllMenus();
+    if(!isOpen) popupSettings.classList.add('open');
+  });
+  document.getElementById('btn-more').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = popupMore.classList.contains('open');
+    closeAllPopups(); closeAllMenus();
+    if(!isOpen) popupMore.classList.add('open');
+  });
+  popupAccount.addEventListener('click', e => e.stopPropagation());
+  popupSettings.addEventListener('click', e => e.stopPropagation());
+  popupMore.addEventListener('click', e => e.stopPropagation());
+
+  /* decorative activity bar icons (Run & Debug, Remote, Live Share, Testing, Python, Database, Notebook, Runner) */
+  document.querySelectorAll('.activitybar button[data-action-toast]').forEach(btn => {
+    btn.addEventListener('click', () => showToast((btn.getAttribute('title') || 'This view') + ' isn\'t wired up in this preview'));
+  });
+
+  /* Copilot icon in the activity bar opens the same panel as the titlebar Copilot button */
+  document.getElementById('btn-copilot-icon').addEventListener('click', () => {
+    mainGrid.classList.contains('copilot-open') ? closeCopilot() : openCopilot();
+  });
+
+  /* ---------- Theme switcher ---------- */
+  const themes = {
+    dark:    { blue:'#3b8eea', pink:'#e93cac' },
+    rose:    { blue:'#c4a7e7', pink:'#ea9a97' },
+    tokyo:   { blue:'#7aa2f7', pink:'#bb9af7' },
+    nord:    { blue:'#88c0d0', pink:'#b48ead' },
+    gruvbox: { blue:'#fabd2f', pink:'#fe8019' }
+  };
+  document.querySelectorAll('.theme-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = themes[btn.dataset.theme];
+      if(t){
+        document.documentElement.style.setProperty('--blue', t.blue);
+        document.documentElement.style.setProperty('--pink', t.pink);
+      }
+      document.querySelectorAll('.theme-item').forEach(b => b.innerHTML = b.innerHTML.replace(' ✓',''));
+      btn.innerHTML += ' ✓';
+    });
+  });
+
+  /* ---------- Activity bar panel switching (VS Code style toggle) ---------- */
+  let activePanel = 'explorer';
+  document.querySelectorAll('.activitybar button.icon[data-panel]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const panel = btn.dataset.panel;
+      const isHidden = mainGrid.classList.contains('sidebar-hidden');
+
+      if(panel === activePanel && !isHidden){
+        /* clicking the already-active icon collapses the sidebar, like VS Code */
+        mainGrid.classList.add('sidebar-hidden');
+        return;
+      }
+
+      activePanel = panel;
+      mainGrid.classList.remove('sidebar-hidden');
+      document.querySelectorAll('.activitybar button.icon[data-panel]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + panel).classList.add('active');
+    });
+  });
+
+  /* ---------- Search panel ---------- */
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    searchResults.innerHTML = '';
+    if(!q) return;
+    const matches = sectionOrder.filter(id => fileMeta[id].name.toLowerCase().includes(q));
+    if(matches.length === 0){
+      searchResults.innerHTML = '<div class="no-results">No results found</div>';
+      return;
+    }
+    matches.forEach(id => {
+      const div = document.createElement('div');
+      div.className = 'search-result';
+      div.innerHTML = '<b>' + fileMeta[id].name + '</b>';
+      div.addEventListener('click', () => openAndScroll(id));
+      searchResults.appendChild(div);
+    });
+  });
+
+  /* ---------- Command palette ---------- */
+  const cmdkOverlay = document.getElementById('cmdk-overlay');
+  const cmdkInput = document.getElementById('cmdk-input');
+  const cmdkList = document.getElementById('cmdk-list');
+  function renderCmdk(filter){
+    const q = (filter||'').toLowerCase();
+    cmdkList.innerHTML = '';
+    sectionOrder.filter(id => fileMeta[id].name.toLowerCase().includes(q)).forEach((id, i) => {
+      const item = document.createElement('div');
+      item.className = 'cmdk-item' + (i===0 ? ' hi' : '');
+      item.innerHTML = '<span style="color:'+fileMeta[id].color+';">◆</span> ' + fileMeta[id].name;
+      item.addEventListener('click', () => { openAndScroll(id); closeCmdk(); });
+      cmdkList.appendChild(item);
+    });
+  }
+  function openCmdk(){ cmdkOverlay.classList.add('open'); cmdkInput.value=''; renderCmdk(''); cmdkInput.focus(); }
+  function closeCmdk(){ cmdkOverlay.classList.remove('open'); }
+  cmdkInput.addEventListener('input', () => renderCmdk(cmdkInput.value));
+  cmdkInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape'){ closeCmdk(); }
+    if(e.key === 'Enter'){ const first = cmdkList.querySelector('.cmdk-item'); if(first) first.click(); }
+  });
+  cmdkOverlay.addEventListener('click', (e) => { if(e.target === cmdkOverlay) closeCmdk(); });
+
+  document.addEventListener('keydown', (e) => {
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p'){ e.preventDefault(); openCmdk(); }
+    if((e.ctrlKey || e.metaKey) && e.key === '`'){ e.preventDefault(); runAction('toggle-terminal'); }
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b'){ e.preventDefault(); runAction('toggle-sidebar'); }
+  });
+
+  /* ---------- typewriter tagline ---------- */
+  const taglines = [
+    "Building scalable SaaS systems @ accelix.ai 🚀",
+    "Published researcher — IEEE ICCCA 2025 📄",
+    "Secure auth systems: JWT · MFA · SSO · RBAC 🔐"
+  ];
+  const twEl = document.getElementById('typewriter-line');
+  let twIndex = 0, twChar = 0, twDeleting = false;
+  function typewriterTick(){
+    const full = taglines[twIndex];
+    if(!twDeleting){
+      twChar++;
+      twEl.textContent = full.slice(0, twChar);
+      if(twChar === full.length){ twDeleting = true; setTimeout(typewriterTick, 1600); return; }
+    } else {
+      twChar--;
+      twEl.textContent = full.slice(0, twChar);
+      if(twChar === 0){ twDeleting = false; twIndex = (twIndex + 1) % taglines.length; }
+    }
+    setTimeout(typewriterTick, twDeleting ? 25 : 45);
+  }
+  typewriterTick();
+
+  /* ---------- toasts ---------- */
+  function showToast(msg){
+    const stack = document.getElementById('toast-stack');
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    stack.appendChild(t);
+    requestAnimationFrame(() => t.classList.add('show'));
+    setTimeout(() => {
+      t.classList.remove('show');
+      setTimeout(() => t.remove(), 300);
+    }, 2800);
+  }
+
+  /* hook toast into theme switching */
+  document.querySelectorAll('.theme-item').forEach(btn => {
+    btn.addEventListener('click', () => showToast('Theme switched to ' + btn.textContent.replace(' ✓','').trim()));
+  });
+
+  /* hook toast into send message button */
+  document.querySelector('.send-btn').addEventListener('click', () => showToast('Message sent — thanks for reaching out!'));
+
+  /* ---------- resume download ---------- */
+  document.getElementById('resume-file').addEventListener('click', () => {
+    const content = "AVAJIT KUMAR KEWRAT\nFull-Stack Developer\nVadodara, India | +91-8235717668 | mandalavijeet12@gmail.com\n\nThis is a placeholder text export.\nReplace this with a link to your real PDF resume.";
+    const blob = new Blob([content], {type:'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'Avajit_Kumar_Kewrat_Resume.txt';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    showToast('Downloading resume...');
+  });
+
+  /* ---------- Copilot panel ---------- */
+  const copilotAnswers = {
+    about: "Avajit is a Full-Stack Developer with production experience building scalable SaaS systems at accelix.ai, an AI-powered startup. He's also a published researcher at IEEE ICCCA 2025.",
+    projects: "Highlights include AKMart (an e-commerce app), WorldAtlas (a country explorer covering 250+ countries), LuxVault (an e-commerce storefront), and a real-time face recognition attendance system published at IEEE ICCCA 2025.",
+    experience: "Currently a Product Engineer Intern at Dignified Technology (accelix.ai) since February 2026, building backend APIs, secure authentication (JWT/MFA/SSO/RBAC), and containerized services with Docker.",
+    stack: "React.js on the frontend; Node.js, Express.js, and FastAPI on the backend; PostgreSQL and MongoDB for data, with Prisma and SQLAlchemy as ORMs; Docker, Redis, and MinIO for infrastructure.",
+    contact: "You can reach Avajit at mandalavijeet12@gmail.com, +91-8235717668, or through the Contact section further down the page."
+  };
+  const copilotBody = document.getElementById('copilot-body');
+  const copilotInput = document.getElementById('copilot-input');
+  const mainGridEl = document.getElementById('mainGrid');
+
+  function openCopilot(){ mainGridEl.classList.add('copilot-open'); }
+  function closeCopilot(){ mainGridEl.classList.remove('copilot-open'); }
+  document.getElementById('btn-copilot').addEventListener('click', () => {
+    mainGridEl.classList.contains('copilot-open') ? closeCopilot() : openCopilot();
+  });
+  document.getElementById('btn-copilot-close').addEventListener('click', closeCopilot);
+
+  function addCopilotMsg(text, who){
+    const div = document.createElement('div');
+    div.className = 'copilot-msg ' + who;
+    div.textContent = text;
+    copilotBody.appendChild(div);
+    copilotBody.scrollTop = copilotBody.scrollHeight;
+  }
+
+  document.querySelectorAll('.copilot-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      addCopilotMsg(chip.textContent, 'user');
+      setTimeout(() => addCopilotMsg(copilotAnswers[chip.dataset.q] || "Good question — reach out directly for details!", 'bot'), 500);
+    });
+  });
+  copilotInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' && copilotInput.value.trim()){
+      const val = copilotInput.value.trim();
+      addCopilotMsg(val, 'user');
+      copilotInput.value = '';
+      setTimeout(() => addCopilotMsg("Thanks for asking! For a detailed answer, reach out directly at mandalavijeet12@gmail.com.", 'bot'), 500);
+    }
+  });
+
+  /* ---------- dino game ---------- */
+  const dinoOverlay = document.getElementById('dino-overlay');
+  const dinoCanvas = document.getElementById('dinoCanvas');
+  const dctx = dinoCanvas.getContext('2d');
+  const dinoHint = document.getElementById('dino-hint');
+  let dinoState = null, dinoRAF = null;
+
+  function openDino(){
+    dinoOverlay.classList.add('open');
+    resetDino();
+    drawDino();
+  }
+  function closeDino(){
+    dinoOverlay.classList.remove('open');
+    if(dinoRAF) cancelAnimationFrame(dinoRAF);
+  }
+  document.getElementById('dino-close').addEventListener('click', closeDino);
+  dinoOverlay.addEventListener('click', (e) => { if(e.target === dinoOverlay) closeDino(); });
+
+  function resetDino(){
+    dinoState = {
+      y: 130, vy: 0, jumping: false, running: false, over: false,
+      obstacles: [{x: 560, w: 14, h: 30}], score: 0, speed: 5, t: 0
+    };
+  }
+  function drawDino(){
+    const s = dinoState;
+    dctx.clearRect(0,0,560,180);
+    dctx.fillStyle = '#2d2d2d';
+    dctx.fillRect(0,160,560,2);
+    dctx.fillStyle = '#3b8eea';
+    dctx.fillRect(40, s.y, 26, 30);
+    dctx.fillStyle = '#e93cac';
+    s.obstacles.forEach(o => dctx.fillRect(o.x, 160-o.h, o.w, o.h));
+    dctx.fillStyle = '#d4d4d4';
+    dctx.font = '12px monospace';
+    dctx.fillText('Score: ' + Math.floor(s.score), 470, 20);
+
+    if(s.running && !s.over){
+      s.t++;
+      s.vy += 0.7;
+      s.y += s.vy;
+      if(s.y > 130){ s.y = 130; s.vy = 0; s.jumping = false; }
+      s.obstacles.forEach(o => o.x -= s.speed);
+      if(s.obstacles[s.obstacles.length-1].x < 560 - (180 + Math.random()*120)){
+        s.obstacles.push({x:560, w: 12 + Math.random()*10, h: 24 + Math.random()*20});
+      }
+      s.obstacles = s.obstacles.filter(o => o.x > -20);
+      s.score += 0.15;
+      s.speed = 5 + s.score/200;
+
+      s.obstacles.forEach(o => {
+        if(40+26 > o.x && 40 < o.x+o.w && s.y+30 > 160-o.h){ s.over = true; s.running = false; }
+      });
+    }
+    if(s.over){
+      dctx.fillStyle = '#fff';
+      dctx.font = 'bold 16px monospace';
+      dctx.fillText('Game Over — click or press Space to retry', 90, 90);
+    }
+    dinoRAF = requestAnimationFrame(drawDino);
+  }
+  function dinoJump(){
+    const s = dinoState;
+    if(!s) return;
+    if(s.over){ resetDino(); dinoHint.textContent = 'Press Space or click the game to start'; return; }
+    if(!s.running){ s.running = true; dinoHint.textContent = ''; }
+    if(!s.jumping){ s.jumping = true; s.vy = -11; }
+  }
+  dinoCanvas.addEventListener('click', dinoJump);
+  document.addEventListener('keydown', (e) => {
+    if(e.code === 'Space' && dinoOverlay.classList.contains('open')){ e.preventDefault(); dinoJump(); }
+  });
+
+  /* wire dino game into command palette as an extra command */
+  const originalRenderCmdk = renderCmdk;
+  renderCmdk = function(filter){
+    const q = (filter||'').toLowerCase();
+    cmdkList.innerHTML = '';
+    sectionOrder.filter(id => fileMeta[id].name.toLowerCase().includes(q)).forEach((id) => {
+      const item = document.createElement('div');
+      item.className = 'cmdk-item';
+      item.innerHTML = '<span style="color:'+fileMeta[id].color+';">◆</span> ' + fileMeta[id].name;
+      item.addEventListener('click', () => { openAndScroll(id); closeCmdk(); });
+      cmdkList.appendChild(item);
+    });
+    if('play dino game'.includes(q) || 'dino'.includes(q)){
+      const item = document.createElement('div');
+      item.className = 'cmdk-item';
+      item.innerHTML = '🦖 Play Dino Game';
+      item.addEventListener('click', () => { closeCmdk(); openDino(); });
+      cmdkList.appendChild(item);
+    }
+    const first = cmdkList.querySelector('.cmdk-item');
+    if(first) first.classList.add('hi');
+  };
+</script>
+
+</body>
+</html>
