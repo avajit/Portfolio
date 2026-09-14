@@ -18,48 +18,48 @@ export default function Connect() {
         </div>
 
         <div className="space-y-2.5">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
             <span className="w-24 shrink-0 font-bold text-vsc-white">✉️ Email:</span>
             <a
               href="mailto:mandalavijeet12@gmail.com"
-              className="text-vsc-text no-underline hover:text-vsc-blue transition-colors hover:underline"
+              className="text-vsc-text no-underline hover:text-vsc-blue transition-colors hover:underline break-all"
             >
               mandalavijeet12@gmail.com
             </a>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
             <span className="w-24 shrink-0 font-bold text-vsc-white">📱 Phone:</span>
             <span>+91-8235717668</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
             <span className="w-24 shrink-0 font-bold text-vsc-white">🐙 GitHub:</span>
             <a
               href="https://github.com/avajit"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-vsc-text no-underline hover:text-vsc-blue transition-colors hover:underline"
+              className="text-vsc-text no-underline hover:text-vsc-blue transition-colors hover:underline break-all"
             >
               @avajit
             </a>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
             <span className="w-24 shrink-0 font-bold text-vsc-white">💼 LinkedIn:</span>
             <a
               href="https://linkedin.com/in/avajitkumar-kewrat"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-vsc-text no-underline hover:text-vsc-blue transition-colors hover:underline"
+              className="text-vsc-text no-underline hover:text-vsc-blue transition-colors hover:underline break-all"
             >
               in/avajitkumar-kewrat
             </a>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
             <span className="w-24 shrink-0 font-bold text-vsc-white">⚡ LeetCode:</span>
             <a
               href="https://leetcode.com/u/avajitkumarkewrat"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-vsc-text no-underline hover:text-vsc-blue transition-colors hover:underline"
+              className="text-vsc-text no-underline hover:text-vsc-blue transition-colors hover:underline break-all"
             >
               u/avajitkumarkewrat
             </a>

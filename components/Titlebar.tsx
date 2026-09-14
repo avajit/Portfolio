@@ -183,12 +183,6 @@ export default function Titlebar({
 
       <div className="flex items-center gap-3">
         <button
-          onClick={() => showToast("Portfolio is up to date ✓")}
-          className="rounded bg-vsc-blue px-3 py-1 text-xs text-white"
-        >
-          Update
-        </button>
-        <button
           onClick={onToggleCopilot}
           className="rounded px-3 py-1 text-xs text-white"
           style={{

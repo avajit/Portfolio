@@ -129,7 +129,7 @@ function PortfolioApp() {
         entries.forEach((entry) => {
           const id = entry.target.id as SectionId;
           if (entry.isIntersecting && openTabs.includes(id)) {
-            setActiveTab(id);
+            setActiveTab((prev) => (prev === id ? prev : id));
           }
         });
       },
@@ -176,23 +176,30 @@ function PortfolioApp() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewport.isNarrow]);
 
-  // ── Copilot grid column ──────────────────────────────────────────────────
-  const isMobileCopilot = viewport.isNarrow;
-  const mainCols = `${viewport.activityBarWidth}px ${
-    sidebarHidden ? 0 : viewport.sidebarWidth
-  }px 1fr${copilotOpen && !isMobileCopilot ? " 300px" : ""}`;
+  // ── Copilot & Mobile layout ───────────────────────────────────────────────
+  const isMobile = viewport.isNarrow;
+  const mainCols = isMobile
+    ? "1fr"
+    : `${viewport.activityBarWidth}px ${
+        sidebarHidden ? 0 : viewport.sidebarWidth
+      }px 1fr${copilotOpen ? " 300px" : ""}`;
 
   return (
-    <div className="grid h-screen" style={{ gridTemplateRows: "38px 1fr 22px" }}>
-      <Titlebar
-        isCompactMenu={viewport.isCompactMenu}
-        onToggleSidebar={toggleSidebar}
-        onCloseActiveTab={() => { if (activeTab) closeTab(activeTab); }}
-        onToggleCopilot={() => setCopilotOpen((p) => !p)}
-        onToggleTerminal={() => setTerminalOpen((p) => !p)}
-        onOpenCmdk={() => setCmdkOpen(true)}
-        onZoom={handleZoom}
-      />
+    <div
+      className="grid h-screen"
+      style={{ gridTemplateRows: isMobile ? "1fr" : "38px 1fr 22px" }}
+    >
+      {!isMobile && (
+        <Titlebar
+          isCompactMenu={viewport.isCompactMenu}
+          onToggleSidebar={toggleSidebar}
+          onCloseActiveTab={() => { if (activeTab) closeTab(activeTab); }}
+          onToggleCopilot={() => setCopilotOpen((p) => !p)}
+          onToggleTerminal={() => setTerminalOpen((p) => !p)}
+          onOpenCmdk={() => setCmdkOpen(true)}
+          onZoom={handleZoom}
+        />
+      )}
 
       <div
         className="relative overflow-hidden"
@@ -202,38 +209,65 @@ function PortfolioApp() {
           transition: "grid-template-columns 150ms ease",
         }}
       >
-        <ActivityBar
-          width={viewport.activityBarWidth}
-          activePanel={activePanel}
-          sidebarHidden={sidebarHidden}
-          onSelectPanel={selectPanel}
-          onToggleSidebar={toggleSidebar}
-          onToggleCopilot={() => setCopilotOpen((p) => !p)}
-          onOpenCmdk={() => setCmdkOpen(true)}
-          onToggleTerminal={() => setTerminalOpen((p) => !p)}
-        />
+        {!isMobile && (
+          <ActivityBar
+            width={viewport.activityBarWidth}
+            activePanel={activePanel}
+            sidebarHidden={sidebarHidden}
+            onSelectPanel={selectPanel}
+            onToggleSidebar={toggleSidebar}
+            onToggleCopilot={() => setCopilotOpen((p) => !p)}
+            onOpenCmdk={() => setCmdkOpen(true)}
+            onToggleTerminal={() => setTerminalOpen((p) => !p)}
+          />
+        )}
 
-        <Sidebar
-          width={viewport.sidebarWidth}
-          hidden={sidebarHidden}
-          panel={activePanel}
-          activeTab={activeTab}
-          onOpenFile={openAndScroll}
-        />
+        {!isMobile && (
+          <Sidebar
+            width={viewport.sidebarWidth}
+            hidden={sidebarHidden}
+            panel={activePanel}
+            activeTab={activeTab}
+            onOpenFile={openAndScroll}
+          />
+        )}
 
         {/* ── Main editor area ── */}
         <section className="flex flex-col overflow-hidden">
           <Tabs
             openTabs={openTabs}
             activeTab={activeTab}
+            isMobile={isMobile}
             onSelect={openAndScroll}
             onClose={closeTab}
           />
-          <div className="border-b border-vsc-line px-5 py-1.5 text-xs text-vsc-muted">
-            portfolio &gt; src &gt;{" "}
-            <span className="text-vsc-text">
-              {activeTab ? fileMeta[activeTab].name : ""}
-            </span>
+          <div className="flex items-center justify-between border-b border-vsc-line px-4 py-1.5 text-xs text-vsc-muted">
+            <div>
+              portfolio &gt; src &gt;{" "}
+              <span className="text-vsc-text font-medium">
+                {activeTab ? fileMeta[activeTab].name : ""}
+              </span>
+            </div>
+            {isMobile && (
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => setCmdkOpen(true)}
+                  className="rounded border border-vsc-line bg-vsc-panel px-2 py-0.5 text-[11px] text-vsc-text hover:border-vsc-blue"
+                >
+                  🔍 Search
+                </button>
+                <button
+                  onClick={() => setCopilotOpen((p) => !p)}
+                  className="rounded px-2 py-0.5 text-[11px] font-medium text-white shadow-sm"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, var(--vsc-blue), var(--vsc-pink))",
+                  }}
+                >
+                  ✨ Copilot
+                </button>
+              </div>
+            )}
           </div>
 
           <div ref={contentRef} className="flex-1 overflow-y-auto scroll-smooth">
@@ -278,7 +312,7 @@ function PortfolioApp() {
 
         {/* Copilot panel — column on desktop, fixed drawer on mobile */}
         {copilotOpen && (
-          isMobileCopilot ? (
+          isMobile ? (
             <div className="fixed inset-y-0 right-0 z-50 shadow-2xl">
               <CopilotPanel onClose={() => setCopilotOpen(false)} />
             </div>
@@ -288,7 +322,7 @@ function PortfolioApp() {
         )}
       </div>
 
-      <StatusBar activeTab={activeTab} />
+      {!isMobile && <StatusBar activeTab={activeTab} />}
 
       {/* ── Overlays (fixed) ── */}
       <CommandPalette
