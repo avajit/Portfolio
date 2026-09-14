@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -9,8 +15,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Avajit Kumar Kewrat — portfolio",
-  description: "Full-Stack Developer portfolio, styled as a VS Code editor.",
+  title: "Avajit Kumar Kewrat — Full-Stack Developer",
+  description: "Full-Stack Developer portfolio styled as a VS Code IDE.",
 };
 
 export default function RootLayout({
@@ -19,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${jetbrainsMono.variable} h-full`}>
-      <body className="h-full">{children}</body>
+    <html lang="en" className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} h-full`}>
+      <body className="h-full font-sans">{children}</body>
     </html>
   );
 }

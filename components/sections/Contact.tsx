@@ -30,33 +30,33 @@ export default function Contact() {
         Contact
       </h2>
 
-      <div className="grid max-w-[900px] grid-cols-1 gap-10 sm-tablet:grid-cols-2">
+      <div className="grid max-w-[900px] grid-cols-1 gap-8 sm:grid-cols-2">
         {/* ── Find Me On ── */}
-        <div>
+        <div className="min-w-0">
           <div
             className="mb-3.5 text-[12px] tracking-[.06em]"
             style={{ color: "var(--vsc-comment)" }}
           >
             // FIND ME ON
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2.5">
             {contactContent.findMe.map((item) => (
               <div
                 key={item.value}
-                className="flex items-center gap-3 rounded-md border border-vsc-line bg-vsc-panel px-3.5 py-2.5 transition-all duration-200 hover:border-vsc-blue hover:translate-x-1"
+                className="flex items-center gap-3 min-w-0 rounded-md border border-vsc-line bg-vsc-panel px-3.5 py-2.5 transition-all duration-200 hover:border-vsc-blue hover:translate-x-1"
               >
-                <span className="text-[18px]">{item.icon}</span>
+                <span className="text-[18px] shrink-0">{item.icon}</span>
                 {item.href ? (
                   <a
                     href={item.href}
                     target={item.href.startsWith("http") ? "_blank" : undefined}
                     rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                    className="text-[13px] text-vsc-text no-underline transition-colors hover:text-vsc-blue font-medium"
+                    className="text-[12.5px] xs:text-[13px] text-vsc-text no-underline transition-colors hover:text-vsc-blue font-medium break-all min-w-0"
                   >
                     {item.value}
                   </a>
                 ) : (
-                  <span className="text-[13px] text-vsc-text font-medium">{item.value}</span>
+                  <span className="text-[12.5px] xs:text-[13px] text-vsc-text font-medium break-all min-w-0">{item.value}</span>
                 )}
               </div>
             ))}

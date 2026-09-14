@@ -53,6 +53,7 @@
   --color-vsc-icon-md: var(--vsc-icon-md);
   --color-vsc-icon-pdf: var(--vsc-icon-pdf);
 
+  --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains-mono), monospace;
 
   --breakpoint-tablet: 1024px;
@@ -69,22 +70,10 @@ body {
 body {
   background: var(--vsc-bg);
   color: var(--vsc-text);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 14px;
+  line-height: 1.65;
   transition: background-color 0.25s ease, color 0.25s ease;
-  cursor:
-    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect x="1" y="1" width="14" height="14" fill="none" stroke="%233b8eea" stroke-width="2"/></svg>')
-      8 8,
-    auto;
-}
-
-a,
-button,
-[data-clickable] {
-  cursor:
-    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect x="1" y="1" width="14" height="14" fill="%233b8eea" stroke="%233b8eea" stroke-width="2" fill-opacity="0.3"/></svg>')
-      8 8,
-    pointer;
 }
 
 :focus-visible {

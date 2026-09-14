@@ -24,13 +24,13 @@ export default function About() {
         AI systems.
       </p>
 
-      <div className="mb-[30px] grid max-w-[700px] grid-cols-1 gap-3.5 sm-tablet:grid-cols-2">
+      <div className="mb-[30px] grid max-w-[700px] grid-cols-1 gap-3 sm:grid-cols-2">
         {aboutContent.focusItems.map((item) => (
           <div
             key={item.text}
-            className="rounded-md border border-vsc-line bg-vsc-panel px-4 py-3.5 text-[13px] text-vsc-text transition-all duration-200 hover:border-vsc-pink hover:translate-x-1 cursor-default shadow-sm"
+            className="flex items-center gap-2 min-w-0 rounded-md border border-vsc-line bg-vsc-panel px-3.5 py-3 text-[12.5px] xs:text-[13px] text-vsc-text transition-all duration-200 hover:border-vsc-pink hover:translate-x-1 cursor-default shadow-sm break-words"
           >
-            {item.icon} {item.text}
+            <span>{item.icon}</span> <span>{item.text}</span>
           </div>
         ))}
       </div>

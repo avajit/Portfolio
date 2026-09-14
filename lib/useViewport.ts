@@ -70,7 +70,16 @@ function getSnapshot(): ViewportInfo {
   const width = window.innerWidth;
   if (cachedWidth !== width) {
     cachedWidth = width;
-    cachedSnapshot = computeViewport(width);
+    const next = computeViewport(width);
+    if (
+      next.sidebarWidth !== cachedSnapshot.sidebarWidth ||
+      next.activityBarWidth !== cachedSnapshot.activityBarWidth ||
+      next.isCompactMenu !== cachedSnapshot.isCompactMenu ||
+      next.isNarrow !== cachedSnapshot.isNarrow ||
+      next.sectionPadding !== cachedSnapshot.sectionPadding
+    ) {
+      cachedSnapshot = next;
+    }
   }
   return cachedSnapshot;
 }

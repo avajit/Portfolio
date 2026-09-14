@@ -69,7 +69,7 @@ export default function Terminal({ open, onClose }: Props) {
 
   return (
     <div
-      className="flex shrink-0 flex-col border-t border-vsc-line bg-vsc-titlebar"
+      className="flex shrink-0 flex-col border-t border-vsc-line bg-vsc-titlebar font-mono"
       style={{ height: 190 }}
     >
       {/* Terminal tab bar */}

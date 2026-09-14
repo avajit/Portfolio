@@ -12,17 +12,17 @@ export default function Projects() {
         Projects
       </h2>
 
-      <div className="grid max-w-[900px] grid-cols-1 gap-5 sm-tablet:grid-cols-2">
+      <div className="grid max-w-[900px] grid-cols-1 gap-4 sm:grid-cols-2">
         {projectsContent.map((proj) => (
           <div
             key={proj.title}
-            className="group relative flex flex-col justify-between rounded-md border border-vsc-line bg-vsc-panel p-5 transition-all duration-300 hover:-translate-y-1 hover:border-vsc-blue hover:shadow-[0_8px_25px_rgba(59,142,234,0.12)]"
+            className="group relative flex flex-col justify-between min-w-0 rounded-md border border-vsc-line bg-vsc-panel p-4 xs:p-5 transition-all duration-300 hover:-translate-y-1 hover:border-vsc-blue hover:shadow-[0_8px_25px_rgba(59,142,234,0.12)]"
           >
             <div>
-              <div className="mb-2 text-[15px] font-bold text-vsc-white group-hover:text-vsc-blue transition-colors">
+              <div className="mb-2 text-[14.5px] xs:text-[15px] font-bold text-vsc-white group-hover:text-vsc-blue transition-colors break-words">
                 {proj.title}
               </div>
-              <p className="mb-4 text-[12.5px] leading-[1.6] text-vsc-muted">
+              <p className="mb-4 text-[12px] xs:text-[12.5px] leading-[1.6] text-vsc-muted break-words">
                 {proj.desc}
               </p>
             </div>

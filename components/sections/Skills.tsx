@@ -32,21 +32,21 @@ export default function Skills() {
         Skills
       </h2>
 
-      <div className="grid max-w-[820px] grid-cols-1 gap-5 sm-tablet:grid-cols-2">
+      <div className="grid max-w-[820px] grid-cols-1 gap-4 sm:grid-cols-2">
         {skillsContent.map((block) => (
           <div
             key={block.title}
-            className="rounded-md border border-vsc-line bg-vsc-titlebar px-5 py-[18px] transition-all duration-200 hover:border-vsc-blue/60"
+            className="rounded-md border border-vsc-line bg-vsc-titlebar px-4 py-4 xs:px-5 xs:py-[18px] transition-all duration-200 hover:border-vsc-blue/60"
           >
-            <h3 className="mb-3.5 text-[12px] uppercase tracking-wider text-vsc-muted font-semibold">
+            <h3 className="mb-3.5 text-[11.5px] xs:text-[12px] uppercase tracking-wider text-vsc-muted font-semibold">
               {block.title}
             </h3>
             {block.skills.map((skill) => (
               <div
                 key={skill.label}
-                className="group mb-2.5 flex items-center gap-2.5 text-[12.5px]"
+                className="group mb-2.5 flex items-center gap-2 xs:gap-2.5 text-[11.5px] xs:text-[12.5px]"
               >
-                <span className="w-[110px] shrink-0 text-vsc-text group-hover:text-vsc-white transition-colors">
+                <span className="w-[85px] xs:w-[110px] shrink-0 truncate text-vsc-text group-hover:text-vsc-white transition-colors">
                   {skill.label}
                 </span>
                 <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-vsc-hover">

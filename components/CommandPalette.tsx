@@ -77,7 +77,7 @@ export default function CommandPalette({ open, onClose, onNavigate, onDino }: Pr
       onClick={onClose}
     >
       <div
-        className="w-[480px] max-w-[90vw] overflow-hidden rounded-md border border-vsc-line bg-vsc-elevated shadow-2xl"
+        className="w-[480px] max-w-[90vw] overflow-hidden rounded-md border border-vsc-line bg-vsc-elevated shadow-2xl font-mono"
         onClick={(e) => e.stopPropagation()}
       >
         <input
