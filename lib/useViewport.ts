@@ -28,9 +28,9 @@ function computeViewport(width: number): ViewportInfo {
       sectionPadding: "20px 14px 40px",
     };
   }
-  if (width <= 600) {
+  if (width <= 640) {
     return {
-      sidebarWidth: 180,
+      sidebarWidth: 190,
       activityBarWidth: 44,
       isCompactMenu: true,
       isNarrow: true,
@@ -42,7 +42,7 @@ function computeViewport(width: number): ViewportInfo {
       sidebarWidth: 200,
       activityBarWidth: 48,
       isCompactMenu: true,
-      isNarrow: true,
+      isNarrow: false,
       sectionPadding: "34px 26px 55px",
     };
   }

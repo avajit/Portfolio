@@ -246,16 +246,18 @@ function PortfolioApp() {
 
         {/* ── Main editor area ── */}
         <section className="flex flex-col flex-1 min-w-0 overflow-hidden">
-          <Tabs
-            openTabs={openTabs}
-            activeTab={activeTab}
-            isMobile={isMobile}
-            onSelect={openAndScroll}
-            onClose={closeTab}
-            onOpenCmdk={() => setCmdkOpen(true)}
-            onToggleCopilot={() => setCopilotOpen((p) => !p)}
-            onToggleTerminal={() => setTerminalOpen((p) => !p)}
-          />
+          {!isMobile && (
+            <Tabs
+              openTabs={openTabs}
+              activeTab={activeTab}
+              isMobile={isMobile}
+              onSelect={openAndScroll}
+              onClose={closeTab}
+              onOpenCmdk={() => setCmdkOpen(true)}
+              onToggleCopilot={() => setCopilotOpen((p) => !p)}
+              onToggleTerminal={() => setTerminalOpen((p) => !p)}
+            />
+          )}
 
           <div ref={contentRef} className="flex-1 overflow-y-auto scroll-smooth">
             {!isMobile ? (
