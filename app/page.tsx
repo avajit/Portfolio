@@ -42,7 +42,7 @@ function PortfolioApp() {
   const sidebarHidden = sidebarOverride ?? viewport.isNarrow;
 
   // ── Tabs ─────────────────────────────────────────────────────────────────
-  const [openTabs, setOpenTabs] = useState<SectionId[]>(sectionOrder);
+  const [openTabs, setOpenTabs] = useState<SectionId[]>(["home"]);
   const [activeTab, setActiveTab] = useState<SectionId | null>("home");
 
   // ── Overlays & panels ────────────────────────────────────────────────────
@@ -131,7 +131,7 @@ function PortfolioApp() {
     [activeTab, viewport.isNarrow]
   );
 
-  // ── IntersectionObserver for scroll-sync on mobile ──────────────────────
+  const openTabsKey = openTabs.join(",");
   useEffect(() => {
     if (!viewport.isNarrow) return;
     const el = contentRef.current;
@@ -152,7 +152,7 @@ function PortfolioApp() {
       if (target) observer.observe(target);
     });
     return () => observer.disconnect();
-  }, [openTabs, viewport.isNarrow]);
+  }, [openTabsKey, viewport.isNarrow]);
 
   // ── Global keyboard shortcuts ────────────────────────────────────────────
   useEffect(() => {

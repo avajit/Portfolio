@@ -182,15 +182,6 @@ export default function Titlebar({
       {isCompactMenu && <div className="flex-1" />}
 
       <div className="flex items-center gap-3">
-        <button
-          onClick={onToggleCopilot}
-          className="rounded px-3 py-1 text-xs text-white"
-          style={{
-            background: "linear-gradient(135deg, var(--vsc-blue), var(--vsc-pink))",
-          }}
-        >
-          ✨ Copilot
-        </button>
         <span className="text-[13px] text-vsc-muted">⧉</span>
         <div className="ml-2 flex">
           <button
