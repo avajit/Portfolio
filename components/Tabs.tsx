@@ -70,16 +70,7 @@ export default function Tabs({
             <span className="hidden md:inline text-[11px]">Search</span>
           </button>
         )}
-        {onToggleCopilot && (
-          <button
-            onClick={onToggleCopilot}
-            title="Toggle AI Copilot"
-            className="flex items-center gap-1 rounded px-2 py-1 text-xs text-vsc-muted hover:bg-vsc-hover hover:text-vsc-blue transition-colors"
-          >
-            <span className="text-sm text-vsc-blue">✨</span>
-            <span className="hidden md:inline text-[11px] font-medium text-vsc-blue">Copilot</span>
-          </button>
-        )}
+
         {onToggleTerminal && (
           <button
             onClick={onToggleTerminal}

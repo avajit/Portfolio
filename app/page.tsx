@@ -41,8 +41,11 @@ function PortfolioApp() {
   const [sidebarOverride, setSidebarOverride] = useState<boolean | null>(null);
   const sidebarHidden = sidebarOverride ?? viewport.isNarrow;
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   // ── Tabs ─────────────────────────────────────────────────────────────────
-  const [openTabs, setOpenTabs] = useState<SectionId[]>(sectionOrder);
+  const [openTabs, setOpenTabs] = useState<SectionId[]>(["home"]);
   const [activeTab, setActiveTab] = useState<SectionId | null>("home");
 
   // ── Overlays & panels ────────────────────────────────────────────────────
@@ -96,9 +99,18 @@ function PortfolioApp() {
   const closeTab = useCallback((id: SectionId) => {
     setOpenTabs((prev) => {
       const next = prev.filter((t) => t !== id);
+      if (next.length === 0) {
+        setActiveTab(null);
+      }
       return next;
     });
-  }, []);
+    // If we closed the active tab, pick the nearest remaining tab
+    setActiveTab((prev) => {
+      if (prev !== id) return prev;
+      const remaining = openTabs.filter((t) => t !== id);
+      return remaining.length > 0 ? remaining[0] : null;
+    });
+  }, [openTabs]);
 
   // ── IntersectionObserver for scroll-sync ─────────────────────────────────
   useEffect(() => {
@@ -159,29 +171,31 @@ function PortfolioApp() {
 
   const isNarrow = viewport.isNarrow;
   const mainCols = isNarrow
-    ? "1fr"
+    ? (sidebarHidden ? "1fr" : `${viewport.sidebarWidth}px 1fr`)
     : `${viewport.activityBarWidth}px ${
         sidebarHidden ? 0 : viewport.sidebarWidth
       }px 1fr${copilotOpen ? " 300px" : ""}`;
 
+  if (!mounted) {
+    return null; // Prevent hydration flicker
+  }
+
   return (
     <div
-      className="grid h-screen select-none font-sans"
+      className="grid h-full select-none font-sans w-full overflow-hidden"
       style={{
-        gridTemplateRows: isNarrow ? "1fr" : "38px 1fr 22px",
+        gridTemplateRows: isNarrow ? "38px 1fr" : "38px 1fr 22px",
       }}
     >
-      {!isNarrow && (
-        <Titlebar
-          isCompactMenu={viewport.isCompactMenu}
-          onToggleSidebar={toggleSidebar}
-          onCloseActiveTab={() => { if (activeTab) closeTab(activeTab); }}
-          onToggleCopilot={() => setCopilotOpen((p) => !p)}
-          onToggleTerminal={() => setTerminalOpen((p) => !p)}
-          onOpenCmdk={() => setCmdkOpen(true)}
-          onZoom={handleZoom}
-        />
-      )}
+      <Titlebar
+        isCompactMenu={viewport.isCompactMenu}
+        onToggleSidebar={toggleSidebar}
+        onCloseActiveTab={() => { if (activeTab) closeTab(activeTab); }}
+        onToggleCopilot={() => setCopilotOpen((p) => !p)}
+        onToggleTerminal={() => setTerminalOpen((p) => !p)}
+        onOpenCmdk={() => setCmdkOpen(true)}
+        onZoom={handleZoom}
+      />
 
       <div
         className="relative overflow-hidden"
@@ -204,7 +218,7 @@ function PortfolioApp() {
           />
         )}
 
-        {!isNarrow && (
+        {(!isNarrow || !sidebarHidden) && (
           <Sidebar
             width={viewport.sidebarWidth}
             hidden={sidebarHidden}

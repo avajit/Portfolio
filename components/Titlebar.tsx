@@ -114,9 +114,11 @@ export default function Titlebar({
       className="relative z-30 flex items-center gap-1 border-b border-vsc-line bg-vsc-titlebar px-2.5"
       onClick={() => setOpenMenu(null)}
     >
-      <div className="flex h-[22px] w-[22px] items-center justify-center text-base text-vsc-blue">
-        ◆
-      </div>
+      {!isCompactMenu && (
+        <div className="flex h-[22px] w-[22px] items-center justify-center text-base text-vsc-blue">
+          ◆
+        </div>
+      )}
 
       {!isCompactMenu && (
         <div className="relative flex gap-0.5 text-[13px] text-vsc-muted">
@@ -144,29 +146,7 @@ export default function Titlebar({
         </div>
       )}
 
-      {isCompactMenu && (
-        <div className="relative" onClick={(e) => e.stopPropagation()}>
-          <button
-            title="Menu"
-            onClick={() =>
-              setOpenMenu((prev) => (prev === "mobile" ? null : "mobile"))
-            }
-            className="px-2 py-1.5 text-vsc-muted"
-          >
-            ☰
-          </button>
-          {openMenu === "mobile" && (
-            <div className="absolute left-0 top-[30px] z-50 min-w-[220px] rounded-md border border-vsc-line bg-vsc-elevated py-1.5 shadow-2xl">
-              <button onClick={() => { onOpenCmdk(); setOpenMenu(null); }} className="flex w-full items-center px-4 py-1.5 text-left text-[12.5px] text-vsc-text hover:bg-vsc-blue hover:text-white">🔍 Go to file / Command Palette</button>
-              <button onClick={() => { onToggleSidebar(); setOpenMenu(null); }} className="flex w-full items-center px-4 py-1.5 text-left text-[12.5px] text-vsc-text hover:bg-vsc-blue hover:text-white">📁 Toggle Sidebar</button>
-              <button onClick={() => { onToggleTerminal(); setOpenMenu(null); }} className="flex w-full items-center px-4 py-1.5 text-left text-[12.5px] text-vsc-text hover:bg-vsc-blue hover:text-white">⌨ Toggle Terminal</button>
-              <hr className="my-1.5 border-vsc-line" />
-              <button onClick={() => { onZoom(1); setOpenMenu(null); }} className="flex w-full items-center px-4 py-1.5 text-left text-[12.5px] text-vsc-text hover:bg-vsc-blue hover:text-white">Zoom In</button>
-              <button onClick={() => { onZoom(-1); setOpenMenu(null); }} className="flex w-full items-center px-4 py-1.5 text-left text-[12.5px] text-vsc-text hover:bg-vsc-blue hover:text-white">Zoom Out</button>
-            </div>
-          )}
-        </div>
-      )}
+
 
       {!isCompactMenu && (
         <div className="flex flex-1 justify-center">
@@ -182,27 +162,40 @@ export default function Titlebar({
       {isCompactMenu && <div className="flex-1" />}
 
       <div className="flex items-center gap-3">
-        <span className="text-[13px] text-vsc-muted">⧉</span>
-        <div className="ml-2 flex">
-          <button
-            title="Minimize"
-            className="h-[38px] w-[42px] cursor-default text-sm text-vsc-muted hover:bg-vsc-hover"
-          >
-            —
-          </button>
-          <button
-            title="Maximize"
-            className="h-[38px] w-[42px] cursor-default text-sm text-vsc-muted hover:bg-vsc-hover"
-          >
-            ▢
-          </button>
-          <button
-            title="Close"
-            className="h-[38px] w-[42px] cursor-default text-sm text-vsc-muted hover:bg-[#e81123] hover:text-white"
-          >
-            ✕
-          </button>
-        </div>
+        <button 
+          onClick={onToggleCopilot} 
+          title="Toggle Copilot"
+          className="mr-2 flex items-center gap-1.5 rounded-md border border-vsc-blue/30 bg-vsc-blue/10 px-2.5 py-1 text-[12px] font-semibold text-vsc-blue transition-all hover:bg-vsc-blue/20 hover:border-vsc-blue/50"
+        >
+          <span className="text-[13px]">✨</span>
+          {isCompactMenu ? <span>Ask AI</span> : <span>Copilot</span>}
+        </button>
+
+        {!isCompactMenu && (
+          <>
+            <span className="text-[13px] text-vsc-muted">⧉</span>
+            <div className="ml-2 flex">
+              <button
+                title="Minimize"
+                className="h-[38px] w-[42px] cursor-default text-sm text-vsc-muted hover:bg-vsc-hover"
+              >
+                —
+              </button>
+              <button
+                title="Maximize"
+                className="h-[38px] w-[42px] cursor-default text-sm text-vsc-muted hover:bg-vsc-hover"
+              >
+                ▢
+              </button>
+              <button
+                title="Close"
+                className="h-[38px] w-[42px] cursor-default text-sm text-vsc-muted hover:bg-[#e81123] hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
