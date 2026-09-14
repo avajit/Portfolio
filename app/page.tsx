@@ -42,7 +42,7 @@ function PortfolioApp() {
   const sidebarHidden = sidebarOverride ?? viewport.isNarrow;
 
   // ── Tabs ─────────────────────────────────────────────────────────────────
-  const [openTabs, setOpenTabs] = useState<SectionId[]>([...sectionOrder]);
+  const [openTabs, setOpenTabs] = useState<SectionId[]>(["home"]);
   const [activeTab, setActiveTab] = useState<SectionId | null>("home");
 
   // ── Overlays & panels ────────────────────────────────────────────────────
@@ -84,19 +84,26 @@ function PortfolioApp() {
   };
 
   // ── Tab / navigation helpers ─────────────────────────────────────────────
-  const openAndScroll = useCallback((id: SectionId) => {
-    setOpenTabs((prev) => {
-      if (prev.includes(id)) return prev;
-      const insertAt = sectionOrder.indexOf(id);
-      const next = [...prev];
-      const idx = next.findIndex((t) => sectionOrder.indexOf(t) > insertAt);
-      if (idx === -1) next.push(id);
-      else next.splice(idx, 0, id);
-      return next;
-    });
-    setActiveTab(id);
-    sectionRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, []);
+  const openAndScroll = useCallback(
+    (id: SectionId) => {
+      setOpenTabs((prev) => {
+        if (prev.includes(id)) return prev;
+        const insertAt = sectionOrder.indexOf(id);
+        const next = [...prev];
+        const idx = next.findIndex((t) => sectionOrder.indexOf(t) > insertAt);
+        if (idx === -1) next.push(id);
+        else next.splice(idx, 0, id);
+        return next;
+      });
+      setActiveTab(id);
+      if (viewport.isNarrow) {
+        sectionRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        contentRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    },
+    [viewport.isNarrow]
+  );
 
   const closeTab = useCallback(
     (id: SectionId) => {
@@ -109,19 +116,24 @@ function PortfolioApp() {
         } else if (activeTab === id) {
           const nextId = next[Math.min(idx, next.length - 1)];
           setActiveTab(nextId);
-          sectionRefs.current[nextId]?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
+          if (viewport.isNarrow) {
+            sectionRefs.current[nextId]?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          } else {
+            contentRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+          }
         }
         return next;
       });
     },
-    [activeTab]
+    [activeTab, viewport.isNarrow]
   );
 
-  // ── IntersectionObserver for scroll-sync ────────────────────────────────
+  // ── IntersectionObserver for scroll-sync on mobile ──────────────────────
   useEffect(() => {
+    if (!viewport.isNarrow) return;
     const el = contentRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
@@ -140,7 +152,7 @@ function PortfolioApp() {
       if (target) observer.observe(target);
     });
     return () => observer.disconnect();
-  }, [openTabs]);
+  }, [openTabs, viewport.isNarrow]);
 
   // ── Global keyboard shortcuts ────────────────────────────────────────────
   useEffect(() => {
@@ -241,65 +253,59 @@ function PortfolioApp() {
             onSelect={openAndScroll}
             onClose={closeTab}
           />
-          <div className="flex items-center justify-between border-b border-vsc-line px-4 py-1.5 text-xs text-vsc-muted">
-            <div>
-              portfolio &gt; src &gt;{" "}
-              <span className="text-vsc-text font-medium">
-                {activeTab ? fileMeta[activeTab].name : ""}
-              </span>
-            </div>
-            {isMobile && (
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={() => setCmdkOpen(true)}
-                  className="rounded border border-vsc-line bg-vsc-panel px-2 py-0.5 text-[11px] text-vsc-text hover:border-vsc-blue"
-                >
-                  🔍 Search
-                </button>
-                <button
-                  onClick={() => setCopilotOpen((p) => !p)}
-                  className="rounded px-2 py-0.5 text-[11px] font-medium text-white shadow-sm"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, var(--vsc-blue), var(--vsc-pink))",
-                  }}
-                >
-                  ✨ Copilot
-                </button>
-              </div>
-            )}
+          <div className="border-b border-vsc-line px-4 py-1.5 text-xs text-vsc-muted">
+            portfolio &gt; src &gt;{" "}
+            <span className="text-vsc-text font-medium">
+              {activeTab ? fileMeta[activeTab].name : ""}
+            </span>
           </div>
 
           <div ref={contentRef} className="flex-1 overflow-y-auto scroll-smooth">
-            <NavigationProvider navigate={openAndScroll}>
-              {sectionOrder.map((id, i) => {
-                const Component = sectionComponents[id];
-                return (
-                  <section
-                    key={id}
-                    id={id}
-                    ref={(el) => { sectionRefs.current[id] = el; }}
-                    style={{ padding: viewport.sectionPadding }}
-                    className={`min-h-[60vh] ${
-                      i !== sectionOrder.length - 1
-                        ? "border-b border-dashed border-vsc-line"
-                        : ""
-                    }`}
-                  >
-                    <Component />
-                  </section>
-                );
-              })}
-            </NavigationProvider>
-
-            {openTabs.length === 0 && (
-              <div className="flex h-full flex-col items-center justify-center gap-2.5 text-vsc-muted">
-                <div className="text-4xl opacity-50">◆</div>
-                <div>No editor open</div>
-                <div className="text-xs">
-                  Select a file from the sidebar to continue
+            {!isMobile ? (
+              activeTab ? (
+                <section
+                  key={activeTab}
+                  id={activeTab}
+                  style={{ padding: viewport.sectionPadding }}
+                  className="min-h-[60vh]"
+                >
+                  <NavigationProvider navigate={openAndScroll}>
+                    {(() => {
+                      const Component = sectionComponents[activeTab];
+                      return <Component />;
+                    })()}
+                  </NavigationProvider>
+                </section>
+              ) : (
+                <div className="flex h-full min-h-[400px] flex-col items-center justify-center gap-2.5 text-vsc-muted">
+                  <div className="text-4xl opacity-50">◆</div>
+                  <div>No editor open</div>
+                  <div className="text-xs">
+                    Select a file from the sidebar to continue
+                  </div>
                 </div>
-              </div>
+              )
+            ) : (
+              <NavigationProvider navigate={openAndScroll}>
+                {sectionOrder.map((id, i) => {
+                  const Component = sectionComponents[id];
+                  return (
+                    <section
+                      key={id}
+                      id={id}
+                      ref={(el) => { sectionRefs.current[id] = el; }}
+                      style={{ padding: viewport.sectionPadding }}
+                      className={`min-h-[60vh] ${
+                        i !== sectionOrder.length - 1
+                          ? "border-b border-dashed border-vsc-line"
+                          : ""
+                      }`}
+                    >
+                      <Component />
+                    </section>
+                  );
+                })}
+              </NavigationProvider>
             )}
           </div>
 
