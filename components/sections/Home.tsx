@@ -101,14 +101,14 @@ export default function Home() {
         ))}
       </div>
 
-      <div className="mb-[26px] grid max-w-[820px] grid-cols-2 gap-px overflow-hidden rounded-md border border-vsc-line bg-vsc-line sm:grid-cols-4 shadow-sm">
+      <div className="mb-[26px] grid w-full max-w-[820px] grid-cols-2 gap-px overflow-hidden rounded-md border border-vsc-line bg-vsc-line sm:grid-cols-4 shadow-sm">
         {homeContent.stats.map((stat) => (
           <div
             key={stat.label}
-            className="bg-vsc-panel px-3 py-4 text-center xs:px-5 xs:py-5 transition-colors duration-200 hover:bg-vsc-hover"
+            className="bg-vsc-panel p-3 xs:p-4 text-center transition-colors duration-200 hover:bg-vsc-hover min-w-0"
           >
-            <div className="text-[17px] font-extrabold text-vsc-white xs:text-[22px]">{stat.value}</div>
-            <div className="mt-1 text-[10px] xs:text-[10.5px] tracking-wider text-vsc-muted uppercase">{stat.label}</div>
+            <div className="text-[16px] xs:text-[20px] sm:text-[22px] font-extrabold text-vsc-white truncate">{stat.value}</div>
+            <div className="mt-1 text-[9.5px] xs:text-[10.5px] tracking-wider text-vsc-muted uppercase truncate">{stat.label}</div>
           </div>
         ))}
       </div>

@@ -245,7 +245,7 @@ function PortfolioApp() {
         )}
 
         {/* ── Main editor area ── */}
-        <section className="flex flex-col overflow-hidden">
+        <section className="flex flex-col flex-1 min-w-0 overflow-hidden">
           <Tabs
             openTabs={openTabs}
             activeTab={activeTab}
@@ -259,29 +259,46 @@ function PortfolioApp() {
 
           <div ref={contentRef} className="flex-1 overflow-y-auto scroll-smooth">
             {!isMobile ? (
-              activeTab ? (
-                <section
-                  key={activeTab}
-                  id={activeTab}
-                  style={{ padding: viewport.sectionPadding }}
-                  className="min-h-[60vh]"
-                >
-                  <NavigationProvider navigate={openAndScroll}>
-                    {(() => {
-                      const Component = sectionComponents[activeTab];
-                      return <Component />;
-                    })()}
-                  </NavigationProvider>
-                </section>
-              ) : (
-                <div className="flex h-full min-h-[400px] flex-col items-center justify-center gap-2.5 text-vsc-muted">
-                  <div className="text-4xl opacity-50">◆</div>
-                  <div>No editor open</div>
-                  <div className="text-xs">
-                    Select a file from the sidebar to continue
+              (() => {
+                const currentTab =
+                  activeTab && openTabs.includes(activeTab)
+                    ? activeTab
+                    : openTabs.length > 0
+                    ? openTabs[0]
+                    : null;
+
+                if (currentTab) {
+                  const Component = sectionComponents[currentTab];
+                  return (
+                    <section
+                      key={currentTab}
+                      id={currentTab}
+                      style={{ padding: viewport.sectionPadding }}
+                      className="min-h-[60vh]"
+                    >
+                      <NavigationProvider navigate={openAndScroll}>
+                        <Component />
+                      </NavigationProvider>
+                    </section>
+                  );
+                }
+
+                return (
+                  <div className="flex h-full min-h-[400px] flex-col items-center justify-center gap-2.5 text-vsc-muted select-none">
+                    <div className="text-4xl opacity-50">◆</div>
+                    <div className="font-medium text-vsc-text">No editor open</div>
+                    <div className="text-xs text-vsc-muted">
+                      Select a file from the sidebar or click below
+                    </div>
+                    <button
+                      onClick={() => openAndScroll("home")}
+                      className="mt-2 rounded border border-vsc-line bg-vsc-panel px-3 py-1.5 text-xs text-vsc-text hover:border-vsc-blue hover:bg-vsc-hover transition-colors"
+                    >
+                      Open home.tsx
+                    </button>
                   </div>
-                </div>
-              )
+                );
+              })()
             ) : (
               <NavigationProvider navigate={openAndScroll}>
                 {sectionOrder.map((id, i) => {
