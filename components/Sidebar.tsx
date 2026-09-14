@@ -18,6 +18,7 @@ export default function Sidebar({
   activeTab: SectionId | null;
   onOpenFile: (id: SectionId) => void;
 }) {
+  const [portfolioOpen, setPortfolioOpen] = useState(true);
   const [query, setQuery] = useState("");
   const { showToast } = useToast();
 
@@ -27,7 +28,6 @@ export default function Sidebar({
 
   const handleResume = () => {
     showToast("Downloading resume...");
-    // Open PDF if available, otherwise show toast only
     const link = document.createElement("a");
     link.href = "/Avajit_Kumar_Kewrat_Resume.pdf";
     link.target = "_blank";
@@ -38,60 +38,69 @@ export default function Sidebar({
   return (
     <aside
       style={{ width: hidden ? 0 : width }}
-      className={`overflow-y-auto overflow-x-hidden border-r border-vsc-line bg-vsc-sidebar transition-[width] duration-150 ease-linear ${
+      className={`overflow-y-auto overflow-x-hidden border-r border-vsc-line bg-vsc-sidebar transition-[width] duration-150 ease-linear select-none ${
         hidden ? "border-transparent" : ""
       }`}
     >
       <div style={{ width }}>
         {panel === "explorer" && (
-          <div className="py-3.5">
-            <div className="pb-2.5 pl-4 pr-4 text-[11px] tracking-wider text-vsc-muted">
-              PORTFOLIO
+          <div className="py-2.5">
+            <div className="px-4 py-1.5 text-[11px] font-semibold tracking-wider text-vsc-muted">
+              EXPLORER
             </div>
-            <div className="flex items-center gap-1.5 px-4 pb-2.5 pt-1 text-[13px] font-bold">
-              ▾ PORTFOLIO
-            </div>
-            {sectionOrder.map((id) => {
-              const meta = fileMeta[id];
-              const selected = activeTab === id;
-              return (
+            <button
+              onClick={() => setPortfolioOpen((p) => !p)}
+              className="flex w-full items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold text-vsc-text hover:bg-vsc-hover transition-colors text-left"
+            >
+              <span className="w-3 text-center text-[10px]">
+                {portfolioOpen ? "▾" : "▸"}
+              </span>
+              <span>PORTFOLIO</span>
+            </button>
+
+            {portfolioOpen && (
+              <div className="mt-0.5">
+                {sectionOrder.map((id) => {
+                  const meta = fileMeta[id];
+                  const selected = activeTab === id;
+                  return (
+                    <button
+                      key={id}
+                      onClick={() => onOpenFile(id)}
+                      className={`flex w-full items-center gap-2 overflow-hidden py-1.5 pl-6 pr-4 text-left text-[13px] transition-colors ${
+                        selected
+                          ? "bg-vsc-selected text-vsc-white"
+                          : "text-vsc-muted hover:bg-[#2a2d2e] hover:text-vsc-text"
+                      }`}
+                    >
+                      <span
+                        className="w-4 shrink-0 text-center text-[10px] font-bold"
+                        style={{ color: meta.iconColorVar }}
+                      >
+                        {meta.ext}
+                      </span>
+                      <span className="min-w-0 flex-1 truncate">
+                        {meta.name}
+                      </span>
+                    </button>
+                  );
+                })}
                 <button
-                  key={id}
-                  onClick={() => onOpenFile(id)}
-                  className={`flex w-full items-center gap-2 overflow-hidden py-1.5 pl-7 pr-4 text-left text-[13px] ${
-                    selected ? "bg-vsc-selected" : "hover:bg-[#2a2d2e]"
-                  }`}
+                  onClick={handleResume}
+                  className="flex w-full items-center gap-2 overflow-hidden py-1.5 pl-6 pr-4 text-left text-[13px] text-vsc-muted hover:bg-[#2a2d2e] hover:text-vsc-text transition-colors"
                 >
                   <span
-                    className="w-4 shrink-0 rounded text-center text-[10px] font-bold"
-                    style={{ color: meta.iconColorVar }}
+                    className="w-4 shrink-0 text-center text-[10px] font-bold"
+                    style={{ color: "var(--vsc-icon-pdf)" }}
                   >
-                    {meta.ext}
+                    ◆
                   </span>
-                  <span
-                    className={`min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap ${
-                      selected ? "text-vsc-white" : "text-vsc-muted"
-                    }`}
-                  >
-                    {meta.name}
+                  <span className="min-w-0 flex-1 truncate">
+                    Avajit_Kumar_Kewrat_Resume.pdf
                   </span>
                 </button>
-              );
-            })}
-            <button
-              onClick={handleResume}
-              className="flex w-full items-center gap-2 overflow-hidden py-1.5 pl-7 pr-4 text-left text-[13px] hover:bg-[#2a2d2e]"
-            >
-              <span
-                className="w-4 shrink-0 rounded text-center text-[10px] font-bold"
-                style={{ color: "var(--vsc-icon-pdf)" }}
-              >
-                ◆
-              </span>
-              <span className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-vsc-muted">
-                Avajit_Kumar_Kewrat_Resume.pdf
-              </span>
-            </button>
+              </div>
+            )}
           </div>
         )}
 
