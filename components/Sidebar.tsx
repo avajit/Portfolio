@@ -149,15 +149,15 @@ export default function Sidebar({
             </div>
             <div className="flex items-center justify-between py-1.5 text-[12.5px] text-vsc-text">
               <div className="flex items-center gap-2">
-                <FileIcon name="home.tsx" className="w-[14px] h-[14px] shrink-0" />
-                <span>home.tsx</span>
+                <FileIcon name="Home.tsx" className="w-[14px] h-[14px] shrink-0" />
+                <span>Home.tsx</span>
               </div>
               <span className="text-[11px] font-bold" style={{ color: "#e2c08d" }}>M</span>
             </div>
             <div className="flex items-center justify-between py-1.5 text-[12.5px] text-vsc-text">
               <div className="flex items-center gap-2">
-                <FileIcon name="skills.json" className="w-[14px] h-[14px] shrink-0" />
-                <span>skills.json</span>
+                <FileIcon name="Skills.json" className="w-[14px] h-[14px] shrink-0" />
+                <span>Skills.json</span>
               </div>
               <span className="text-[11px] font-bold" style={{ color: "#e2c08d" }}>M</span>
             </div>

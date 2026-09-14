@@ -14,6 +14,7 @@ import ToastStack from "@/components/ToastStack";
 import Home from "@/components/sections/Home";
 import About from "@/components/sections/About";
 import Skills from "@/components/sections/Skills";
+import Education from "@/components/sections/Education";
 import Experience from "@/components/sections/Experience";
 import Projects from "@/components/sections/Projects";
 import Contact from "@/components/sections/Contact";
@@ -27,6 +28,7 @@ const sectionComponents: Record<SectionId, React.ComponentType> = {
   home: Home,
   about: About,
   skills: Skills,
+  education: Education,
   experience: Experience,
   projects: Projects,
   contact: Contact,
@@ -45,7 +47,7 @@ function PortfolioApp() {
   useEffect(() => setMounted(true), []);
 
   // ── Tabs ─────────────────────────────────────────────────────────────────
-  const [openTabs, setOpenTabs] = useState<SectionId[]>(["home"]);
+  const [openTabs, setOpenTabs] = useState<SectionId[]>(["home", "education"]);
   const [activeTab, setActiveTab] = useState<SectionId | null>("home");
 
   // ── Overlays & panels ────────────────────────────────────────────────────
