@@ -255,7 +255,7 @@ function PortfolioApp() {
                     key={id}
                     id={id}
                     ref={(el) => { sectionRefs.current[id] = el; }}
-                    style={{ padding: (id === "home" || id === "experience" || id === "projects") ? 0 : viewport.sectionPadding }}
+                    style={{ padding: (id === "home" || id === "about" || id === "experience" || id === "projects" || id === "skills" || id === "education" || id === "contact") ? 0 : viewport.sectionPadding }}
                     className="min-h-[60vh]"
                   >
                     <Component />

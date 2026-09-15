@@ -40,10 +40,12 @@ const milestones: Milestone[] = [
       { label: '🔗 Accelix Beta', url: 'https://beta.accelix.ai/' }
     ],
     bullets: [
-      'Engineered scalable backend APIs with Node.js & Express for an AI SaaS platform.',
-      'Implemented JWT, MFA, Google SSO, and RBAC authentication pipelines.',
-      'Designed PostgreSQL schemas via Prisma, Redis rate limiting, and MinIO storage.',
-      'Built FastAPI (Python) endpoints alongside Node.js microservices.'
+      'Architected and built the entire product foundation from scratch, establishing core backend microservices for the Accelix.ai platform.',
+      'Developed scalable backend APIs using Node.js/Express.js and FastAPI (Python) with a focus on high performance and reliability.',
+      'Implemented secure authentication and authorization pipelines using JWT, MFA, Google SSO/OAuth, and strict RBAC.',
+      'Designed and optimized complex PostgreSQL database schemas using Prisma ORM and SQLAlchemy.',
+      'Configured Redis caching and API rate limiting to protect endpoints from excessive requests.',
+      'Integrated MinIO (S3-compatible) for reliable file storage and containerized the backend services with Docker for consistent deployments.'
     ],
     skills: ['Python', 'Node.js', 'FastAPI', 'PostgreSQL', 'Prisma', 'Redis', 'Docker', 'MinIO']
   }
@@ -145,7 +147,7 @@ export default function Experience() {
                     return (
                       <p className={`text-xs font-semibold tracking-wide transition-colors flex flex-wrap items-center justify-center gap-1 ${idx === 0 ? 'text-cyan-300' : 'text-emerald-300'}`}>
                         <span>{role.trim()}</span>
-                        <span className="text-zinc-500">@</span>
+                        <span className="text-sky-400 font-bold">@</span>
                         <span className={idx === 0 ? 'text-cyan-200' : 'text-teal-300'}>{company.trim()}</span>
                       </p>
                     );
@@ -166,7 +168,7 @@ export default function Experience() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    className={`absolute bottom-full mb-3 w-80 rounded-2xl p-[1px] bg-gradient-to-br from-sky-500/40 via-violet-500/30 to-emerald-500/40 shadow-[0_10px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(56,189,248,0.15)] backdrop-blur-xl z-50 pointer-events-auto
+                    className={`absolute bottom-full mb-3 w-[440px] rounded-2xl p-[1px] bg-gradient-to-br from-sky-500/40 via-violet-500/30 to-emerald-500/40 shadow-[0_10px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(56,189,248,0.15)] backdrop-blur-xl z-50 pointer-events-auto
                       ${idx === 0 ? 'left-0' : 'left-1/2 -translate-x-1/2'}`}
                   >
                     {/* Inner Body */}
@@ -298,7 +300,7 @@ export default function Experience() {
                     return (
                       <p className={`text-xs font-semibold tracking-wide transition-colors flex flex-wrap items-center gap-1 mt-0.5 leading-snug ${idx === 0 ? 'text-cyan-300' : 'text-emerald-300'}`}>
                         <span>{role.trim()}</span>
-                        <span className="text-zinc-500">@</span>
+                        <span className="text-sky-400 font-bold">@</span>
                         <span className={idx === 0 ? 'text-cyan-200' : 'text-teal-300'}>{company.trim()}</span>
                       </p>
                     );
@@ -319,7 +321,7 @@ export default function Experience() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: idx === 0 ? -10 : 10, scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    className={`absolute ${idx === 0 ? 'top-full mt-3' : 'bottom-full mb-3'} left-0 w-[280px] rounded-2xl p-[1px] bg-gradient-to-br from-sky-500/40 via-violet-500/30 to-emerald-500/40 shadow-[0_10px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(56,189,248,0.15)] backdrop-blur-xl z-50 text-left pointer-events-auto`}
+                    className={`absolute ${idx === 0 ? 'top-full mt-3' : 'bottom-full mb-3'} left-0 w-[320px] sm:w-[360px] rounded-2xl p-[1px] bg-gradient-to-br from-sky-500/40 via-violet-500/30 to-emerald-500/40 shadow-[0_10px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(56,189,248,0.15)] backdrop-blur-xl z-50 text-left pointer-events-auto`}
                   >
                     {/* Inner Body */}
                     <div className="rounded-[15px] bg-[#0d1117]/95 p-4 flex flex-col gap-2 relative h-full w-full">
