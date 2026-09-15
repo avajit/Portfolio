@@ -83,7 +83,7 @@ export default function Experience() {
 
       {/* --- DESKTOP VIEW: Horizontal Winding S-Snake Curve --- */}
       <div className="hidden md:block relative w-full h-[320px] select-none mt-8">
-        
+
         {/* Horizontal SVG Path */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
           <defs>
@@ -123,18 +123,17 @@ export default function Experience() {
               onMouseLeave={() => setActiveId(null)}
             >
               {/* Flag Button */}
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
-                isActive 
-                  ? 'bg-sky-500/20 border-2 border-sky-400 shadow-[0_0_16px_rgba(56,189,248,0.5)] scale-105' 
+              <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${isActive
+                  ? 'bg-sky-500/20 border-2 border-sky-400 shadow-[0_0_16px_rgba(56,189,248,0.5)] scale-105'
                   : 'bg-zinc-950 border border-zinc-700 hover:border-sky-400/60 shadow-md'
-              }`}>
+                }`}>
                 <span className="text-sm select-none">🚩</span>
               </div>
-              
+
               {/* Minimal Label */}
               <div className="absolute top-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 mt-3 select-none pointer-events-none w-max">
                 <div className="flex items-center gap-2 whitespace-nowrap">
-                  <span className={idx === 0 
+                  <span className={idx === 0
                     ? "text-sky-300 bg-sky-950/60 border border-sky-800/60 font-mono text-[11px] px-3 py-0.5 rounded-full shadow-[0_0_10px_rgba(56,189,248,0.15)] whitespace-nowrap"
                     : "text-emerald-300 bg-emerald-950/60 border border-emerald-800/60 font-mono text-[11px] px-3 py-0.5 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.15)] whitespace-nowrap"
                   }>
@@ -173,16 +172,15 @@ export default function Experience() {
                   >
                     {/* Inner Body */}
                     <div className="rounded-[15px] bg-[#0d1117]/95 p-4 flex flex-col gap-2 relative h-full w-full">
-                      
+
                       {/* Down-Arrow Pointer (Hiding outside the gradient border) */}
                       <div className={`absolute top-full ${idx === 0 ? 'left-6' : 'left-1/2 -translate-x-1/2'} -mt-[1px] border-[6px] border-transparent border-t-zinc-700`} />
                       <div className={`absolute top-full ${idx === 0 ? 'left-6' : 'left-1/2 -translate-x-1/2'} -mt-[2px] border-[5px] border-transparent border-t-[#0d1117]`} />
-                      
-                      <h4 className={`text-sm font-bold bg-clip-text text-transparent leading-snug ${
-                        idx === 0 
-                          ? 'bg-gradient-to-r from-sky-400 to-emerald-400' 
+
+                      <h4 className={`text-sm font-bold bg-clip-text text-transparent leading-snug ${idx === 0
+                          ? 'bg-gradient-to-r from-sky-400 to-emerald-400'
                           : 'bg-gradient-to-r from-sky-400 to-cyan-300'
-                      }`}>
+                        }`}>
                         {item.title}
                       </h4>
                       <p className="text-[11px] font-mono text-fuchsia-400 mt-1 mb-2.5 whitespace-normal">
@@ -236,7 +234,7 @@ export default function Experience() {
 
       {/* --- MOBILE VIEW: Vertical Winding S-Snake Curve --- */}
       <div className="block md:hidden relative w-full h-[280px] select-none pl-2 mt-4 mb-4">
-        
+
         {/* Vertical SVG Path */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
           <defs>
@@ -276,18 +274,17 @@ export default function Experience() {
               onMouseLeave={() => setActiveId(null)}
             >
               {/* Flag Button */}
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
-                isActive 
-                  ? 'bg-sky-500/20 border-2 border-sky-400 shadow-[0_0_16px_rgba(56,189,248,0.5)] scale-105' 
+              <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${isActive
+                  ? 'bg-sky-500/20 border-2 border-sky-400 shadow-[0_0_16px_rgba(56,189,248,0.5)] scale-105'
                   : 'bg-zinc-950 border border-zinc-700 hover:border-sky-400/60 shadow-md'
-              }`}>
+                }`}>
                 <span className="text-sm select-none">🚩</span>
               </div>
-              
+
               {/* Minimal Label */}
               <div className="absolute left-14 top-1/2 -translate-y-1/2 flex flex-col items-start gap-1.5 select-none pointer-events-none max-w-[240px] pr-2">
                 <div className="flex flex-wrap items-center gap-1.5">
-                  <span className={idx === 0 
+                  <span className={idx === 0
                     ? "text-sky-300 bg-sky-950/60 border border-sky-800/60 font-mono text-[11px] px-3 py-0.5 rounded-full shadow-[0_0_10px_rgba(56,189,248,0.15)] whitespace-nowrap"
                     : "text-emerald-300 bg-emerald-950/60 border border-emerald-800/60 font-mono text-[11px] px-3 py-0.5 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.15)] whitespace-nowrap"
                   }>
@@ -339,11 +336,10 @@ export default function Experience() {
                         </>
                       )}
 
-                      <h4 className={`text-sm font-bold bg-clip-text text-transparent leading-snug ${
-                        idx === 0 
-                          ? 'bg-gradient-to-r from-sky-400 to-emerald-400' 
+                      <h4 className={`text-sm font-bold bg-clip-text text-transparent leading-snug ${idx === 0
+                          ? 'bg-gradient-to-r from-sky-400 to-emerald-400'
                           : 'bg-gradient-to-r from-sky-400 to-cyan-300'
-                      }`}>
+                        }`}>
                         {item.title}
                       </h4>
                       <p className="text-[11px] font-mono text-fuchsia-400 mt-1 mb-2.5 whitespace-normal">

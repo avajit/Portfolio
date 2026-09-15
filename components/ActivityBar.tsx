@@ -39,11 +39,10 @@ function IconBtn({
     <button
       title={title}
       onClick={onClick}
-      className={`relative flex h-[26px] w-[26px] shrink-0 items-center justify-center ${
-        active
+      className={`relative flex h-[26px] w-[26px] shrink-0 items-center justify-center ${active
           ? "text-vsc-white before:absolute before:-left-3 before:-top-1 before:-bottom-1 before:w-[2px] before:bg-vsc-white"
           : "text-vsc-muted hover:text-vsc-text"
-      }`}
+        }`}
     >
       <span className="[&>svg]:h-5 [&>svg]:w-5 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-[1.4] [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">
         {children}

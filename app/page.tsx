@@ -114,28 +114,45 @@ function PortfolioApp() {
     });
   }, [openTabs]);
 
-  // ── IntersectionObserver for scroll-sync ─────────────────────────────────
+  // ── Scroll Spy ───────────────────────────────────────────────────────────
   useEffect(() => {
     const el = contentRef.current;
     if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const id = entry.target.id as SectionId;
-            setActiveTab((prev) => (prev === id ? prev : id));
+
+    let timeoutId: number;
+    const handleScroll = () => {
+      if (timeoutId) cancelAnimationFrame(timeoutId);
+
+      timeoutId = requestAnimationFrame(() => {
+        const triggerOffset = 200; // Trigger line 200px from the top of the viewport
+        let currentSection: SectionId | null = null;
+
+        for (const id of sectionOrder) {
+          const sectionEl = sectionRefs.current[id];
+          if (sectionEl) {
+            const rect = sectionEl.getBoundingClientRect();
+            // Check if this section spans across our trigger line
+            if (rect.top <= triggerOffset && rect.bottom > triggerOffset) {
+              currentSection = id;
+              break;
+            }
           }
-        });
-      },
-      { root: el, threshold: 0.3 }
-    );
+        }
 
-    sectionOrder.forEach((id) => {
-      const target = sectionRefs.current[id];
-      if (target) observer.observe(target);
-    });
+        if (currentSection) {
+          setActiveTab((prev) => (prev === currentSection ? prev : currentSection));
+        }
+      });
+    };
 
-    return () => observer.disconnect();
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    // Initial check
+    setTimeout(handleScroll, 100);
+
+    return () => {
+      el.removeEventListener("scroll", handleScroll);
+      if (timeoutId) cancelAnimationFrame(timeoutId);
+    };
   }, []);
 
   // ── Global keyboard shortcuts ────────────────────────────────────────────
@@ -174,9 +191,8 @@ function PortfolioApp() {
   const isNarrow = viewport.isNarrow;
   const mainCols = isNarrow
     ? (sidebarHidden ? "1fr" : `${viewport.sidebarWidth}px 1fr`)
-    : `${viewport.activityBarWidth}px ${
-        sidebarHidden ? 0 : viewport.sidebarWidth
-      }px 1fr${copilotOpen ? " 300px" : ""}`;
+    : `${viewport.activityBarWidth}px ${sidebarHidden ? 0 : viewport.sidebarWidth
+    }px 1fr${copilotOpen ? " 300px" : ""}`;
 
   if (!mounted) {
     return null; // Prevent hydration flicker
