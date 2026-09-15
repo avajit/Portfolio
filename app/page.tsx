@@ -14,6 +14,7 @@ import ToastStack from "@/components/ToastStack";
 import Home from "@/components/sections/Home";
 import About from "@/components/sections/About";
 import Skills from "@/components/sections/Skills";
+import Education from "@/components/sections/Education";
 import Experience from "@/components/sections/Experience";
 import Projects from "@/components/sections/Projects";
 import Contact from "@/components/sections/Contact";
@@ -27,6 +28,7 @@ const sectionComponents: Record<SectionId, React.ComponentType> = {
   home: Home,
   about: About,
   skills: Skills,
+  education: Education,
   experience: Experience,
   projects: Projects,
   contact: Contact,
@@ -195,6 +197,7 @@ function PortfolioApp() {
         onToggleTerminal={() => setTerminalOpen((p) => !p)}
         onOpenCmdk={() => setCmdkOpen(true)}
         onZoom={handleZoom}
+        onDino={() => setDinoOpen(true)}
       />
 
       <div
@@ -252,7 +255,7 @@ function PortfolioApp() {
                     key={id}
                     id={id}
                     ref={(el) => { sectionRefs.current[id] = el; }}
-                    style={{ padding: viewport.sectionPadding }}
+                    style={{ padding: id === "home" ? 0 : viewport.sectionPadding }}
                     className={`min-h-[60vh] ${
                       i !== sectionOrder.length - 1
                         ? "border-b border-dashed border-vsc-line"

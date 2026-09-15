@@ -35,23 +35,6 @@ export default function About() {
         ))}
       </div>
 
-      <h2 className="mb-4 font-extrabold text-vsc-white" style={{ fontSize: "18px" }}>
-        Education
-      </h2>
-
-      <div className="flex flex-col gap-4">
-        {aboutContent.education.map((edu) => (
-          <div
-            key={edu.school}
-            className="border-l-2 border-vsc-blue pl-4 py-1 transition-all duration-200 hover:border-vsc-pink hover:pl-5"
-          >
-            <div className="text-[14px] font-bold text-vsc-white">
-              {edu.school}
-            </div>
-            <div className="mt-0.5 text-[12px] text-vsc-muted">{edu.period}</div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }

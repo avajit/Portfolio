@@ -101,6 +101,11 @@ export const aboutContent = {
         "Kantipur Secondary School, Biratnagar, Nepal — Higher Secondary (12th Grade)",
       period: "2022 · 81.75%",
     },
+    {
+      school:
+        "Mount Makalu English Boarding School, Nepal — Secondary Education (10th Grade)",
+      period: "80%",
+    },
   ] as EducationEntry[],
 };
 

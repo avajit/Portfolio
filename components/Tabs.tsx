@@ -1,6 +1,7 @@
 "use client";
 
 import { fileMeta, type SectionId } from "@/lib/fileMeta";
+import { FileIcon } from "./FileIcon";
 
 export default function Tabs({
   openTabs,
@@ -38,9 +39,7 @@ export default function Tabs({
                   : "text-vsc-muted hover:bg-vsc-hover"
               }`}
             >
-              <span className="text-[10px] font-bold" style={{ color: meta.iconColorVar }}>
-                {meta.ext}
-              </span>
+              <FileIcon name={meta.name} className="w-[14px] h-[14px] shrink-0" />
               <span>{meta.name}</span>
               {!isMobile && (
                 <span
