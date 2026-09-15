@@ -160,18 +160,51 @@ export const skillsContent: SkillBlock[] = [
 
 // ─── EXPERIENCE ───────────────────────────────────────────────────────────────
 
-export interface TimelineItem {
-  role: string;
-  meta: string;
-  desc: string;
+export interface Milestone {
+  id: string;
+  date: string;
+  tag: string;
+  title: string;
+  subtitle: string;
+  certLink?: string;
+  certId?: string;
+  points: string[];
+  skills: string[];
 }
 
-export const experienceContent: TimelineItem[] = [
+export const experienceContent: Milestone[] = [
   {
-    role: "Product Engineer Intern — Dignified Technology Pvt. Ltd. (accelix.ai)",
-    meta: "Vadodara, India · February 2026 – Present",
-    desc: "Built scalable backend APIs with Node.js and Express.js for an AI-powered hardware validation SaaS platform. Implemented JWT, MFA, Google SSO, and RBAC for secure authentication. Designed PostgreSQL schemas with Prisma ORM, added Redis-based rate limiting, integrated MinIO object storage, and containerized services with Docker. Also built FastAPI (Python) REST APIs using SQLAlchemy alongside the Node.js backend.",
+    id: 'udemy-bootcamp',
+    date: 'June 12, 2025',
+    tag: '61.5 Hours',
+    title: 'The Complete Full-Stack Web Development Bootcamp',
+    subtitle: 'Dr. Angela Yu • Udemy Certification',
+    certLink: 'https://ude.my/UC-d1447dbe-4e4c-4cae-b9cc-f5a80ce68070',
+    certId: 'UC-d1447dbe-4e4c-4cae-b9cc-f5a80ce68070',
+    points: [
+      'Mastered frontend & backend architecture using React.js and Node.js.',
+      'Engineered RESTful APIs, routing workflows, and asynchronous handlers.',
+      'Implemented data modeling with MongoDB and PostgreSQL.'
+    ],
+    skills: ['React.js', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'REST APIs']
   },
+  {
+    id: 'dignified-intern',
+    date: 'Feb 2026 – Present',
+    tag: 'Full-Time Internship',
+    title: 'Product Engineer Intern',
+    subtitle: 'Dignified Technology Pvt. Ltd. (accelix.ai) • Vadodara, India',
+    points: [
+      'Engineered backend APIs with Node.js & Express.js for an AI hardware SaaS platform.',
+      'Built authentication systems with JWT, MFA, Google SSO, and RBAC.',
+      'Designed PostgreSQL schemas via Prisma, Redis rate limiting, and MinIO storage.',
+      'Built FastAPI REST services with SQLAlchemy alongside microservices.'
+    ],
+    skills: ['Node.js', 'FastAPI', 'PostgreSQL', 'Prisma', 'Redis', 'Docker', 'MinIO']
+  }
+];
+
+export const researchAndSelfStudyContent = [
   {
     role: "Published Researcher — IEEE ICCCA 2025",
     meta: "Greater Noida, India · November 2025",

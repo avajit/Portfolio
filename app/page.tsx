@@ -246,7 +246,7 @@ function PortfolioApp() {
             />
           )}
 
-          <div ref={contentRef} className="flex-1 overflow-y-auto scroll-smooth">
+          <div ref={contentRef} className="flex-1 overflow-y-auto scroll-smooth bg-[#121214]">
             <NavigationProvider navigate={openAndScroll}>
               {sectionOrder.map((id, i) => {
                 const Component = sectionComponents[id];
@@ -255,12 +255,8 @@ function PortfolioApp() {
                     key={id}
                     id={id}
                     ref={(el) => { sectionRefs.current[id] = el; }}
-                    style={{ padding: id === "home" ? 0 : viewport.sectionPadding }}
-                    className={`min-h-[60vh] ${
-                      i !== sectionOrder.length - 1
-                        ? "border-b border-dashed border-vsc-line"
-                        : ""
-                    }`}
+                    style={{ padding: (id === "home" || id === "experience") ? 0 : viewport.sectionPadding }}
+                    className="min-h-[60vh]"
                   >
                     <Component />
                   </section>

@@ -5,10 +5,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 export default function Home() {
   const roleConfigs = useMemo(() => [
     { title: 'Software Engineer', color: 'text-sky-400', dot: 'bg-sky-400', cursor: 'bg-sky-400' },
-    { title: 'MERN Stack Engineer', color: 'text-emerald-400', dot: 'bg-emerald-400', cursor: 'bg-emerald-400' },
-    { title: 'Full-Stack Engineer', color: 'text-violet-400', dot: 'bg-violet-400', cursor: 'bg-violet-400' },
-    { title: 'Backend Engineer', color: 'text-amber-400', dot: 'bg-amber-400', cursor: 'bg-amber-400' },
-    { title: 'Frontend Engineer', color: 'text-cyan-400', dot: 'bg-cyan-400', cursor: 'bg-cyan-400' },
+    { title: 'MERN Stack Developer', color: 'text-emerald-400', dot: 'bg-emerald-400', cursor: 'bg-emerald-400' },
+    { title: 'Full-Stack Developer', color: 'text-violet-400', dot: 'bg-violet-400', cursor: 'bg-violet-400' },
+    { title: 'Backend Developer', color: 'text-amber-400', dot: 'bg-amber-400', cursor: 'bg-amber-400' },
+    { title: 'Frontend Developer', color: 'text-cyan-400', dot: 'bg-cyan-400', cursor: 'bg-cyan-400' },
+    { title: 'Web Developer', color: 'text-teal-400', dot: 'bg-teal-400', cursor: 'bg-teal-400' },
     { title: 'IEEE Published Author', color: 'text-pink-400', dot: 'bg-pink-400', cursor: 'bg-pink-400' }
   ], []);
 
