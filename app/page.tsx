@@ -255,7 +255,7 @@ function PortfolioApp() {
                     key={id}
                     id={id}
                     ref={(el) => { sectionRefs.current[id] = el; }}
-                    style={{ padding: viewport.sectionPadding }}
+                    style={{ padding: id === "home" ? 0 : viewport.sectionPadding }}
                     className={`min-h-[60vh] ${
                       i !== sectionOrder.length - 1
                         ? "border-b border-dashed border-vsc-line"
