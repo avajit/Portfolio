@@ -47,7 +47,7 @@ function PortfolioApp() {
   useEffect(() => setMounted(true), []);
 
   // ── Tabs ─────────────────────────────────────────────────────────────────
-  const [openTabs, setOpenTabs] = useState<SectionId[]>(["home", "education"]);
+  const [openTabs, setOpenTabs] = useState<SectionId[]>(["home"]);
   const [activeTab, setActiveTab] = useState<SectionId | null>("home");
 
   // ── Overlays & panels ────────────────────────────────────────────────────
