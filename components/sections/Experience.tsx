@@ -69,10 +69,12 @@ export default function Experience() {
           <span className="text-fuchsia-400 font-semibold">const</span>
           <span className="text-sky-300">experience</span>
           <span className="text-zinc-400">=</span>
-          <span className="text-amber-300">"professional_journey"</span>
-          <span className="text-zinc-500">;</span>
+          <span className="flex items-center">
+            <span className="text-amber-300">"professional_journey"</span>
+            <span className="text-zinc-500">;</span>
+          </span>
         </div>
-        <h2 className="text-3xl sm:text-4xl font-black tracking-tight inline-block bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent pb-1 border-b-2 border-sky-400/80 drop-shadow-[0_0_20px_rgba(56,189,248,0.25)]">
+        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
           Experience
         </h2>
       </div>

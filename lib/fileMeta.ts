@@ -30,10 +30,10 @@ export const fileMeta: Record<SectionId, FileMetaEntry> = {
 export const sectionOrder: SectionId[] = [
   "home",
   "experience",
+  "projects",
   "about",
   "skills",
   "education",
-  "projects",
   "contact",
   "connect",
 ];

@@ -47,6 +47,45 @@ export default function Home() {
     return () => clearTimeout(timeout);
   }, [typedText, isDeleting, currentRoleIndex, roleConfigs]);
 
+  const terminalConfigs = useMemo(() => [
+    "hello world !!",
+    "welcome to my portfolio"
+  ], []);
+
+  const [currentTerminalIndex, setCurrentTerminalIndex] = useState(0);
+  const [terminalTypedText, setTerminalTypedText] = useState("");
+  const [isTerminalDeleting, setIsTerminalDeleting] = useState(false);
+
+  useEffect(() => {
+    const fullText = terminalConfigs[currentTerminalIndex];
+    let typingSpeed = 100;
+
+    if (isTerminalDeleting) {
+      typingSpeed = 50;
+    }
+
+    if (!isTerminalDeleting && terminalTypedText === fullText) {
+      typingSpeed = 2000;
+    } else if (isTerminalDeleting && terminalTypedText === "") {
+      setIsTerminalDeleting(false);
+      setCurrentTerminalIndex((prev) => (prev + 1) % terminalConfigs.length);
+      typingSpeed = 500;
+    }
+
+    const timeout = setTimeout(() => {
+      if (isTerminalDeleting) {
+        setTerminalTypedText(fullText.substring(0, terminalTypedText.length - 1));
+      } else {
+        setTerminalTypedText(fullText.substring(0, terminalTypedText.length + 1));
+        if (terminalTypedText === fullText) {
+          setIsTerminalDeleting(true);
+        }
+      }
+    }, typingSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [terminalTypedText, isTerminalDeleting, currentTerminalIndex, terminalConfigs]);
+
   const currentConfig = roleConfigs[currentRoleIndex];
 
   return (
@@ -61,12 +100,12 @@ export default function Home() {
         {/* LEFT COLUMN: Narrative & Controls */}
         <div className="lg:col-span-7 flex flex-col justify-start px-4 pt-8 sm:pt-10 lg:pt-12 pb-5 sm:px-8 md:px-12 lg:pl-16 lg:pr-6 overflow-y-visible lg:overflow-y-auto">
 
-          {/* Terminal Intro Line */}
-          <div className="font-mono text-xs tracking-wide flex items-center gap-1.5 select-none mb-3">
+          <div className="font-mono text-[10px] sm:text-xs tracking-tight sm:tracking-wide flex items-center gap-1 sm:gap-1.5 select-none mb-4 whitespace-nowrap">
             <span className="text-zinc-600 font-semibold">//</span>
-            <span className="text-emerald-400 font-medium">console.log(</span>
-            <span className="text-amber-300">"hello, world"</span>
+            <span className="text-emerald-400 font-medium">printf(</span>
+            <span className="text-amber-300">"{terminalTypedText}"</span>
             <span className="text-emerald-400 font-medium">);</span>
+            <span className="w-1.5 h-3.5 bg-zinc-500 animate-[blink_1s_step-end_infinite]" />
           </div>
 
           {/* Dynamic Headline */}
